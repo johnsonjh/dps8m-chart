@@ -3,111 +3,90 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- vim: set expandtab ft=javascript: -->
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <!-- "https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js" -->
     <script src="chart.umd.min.js"></script>
-
     <!-- "https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/styles/choices.min.css" -->
     <link rel="stylesheet" href="choices.min.css" />
-
     <!-- "https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/scripts/choices.min.js" -->
     <script src="choices.min.js"></script>
-
     <style>
         .choices {
             background-color: #000000;
             color: #ffffff;
             border: 1px solid #4b5563;
         }
-
         .choices__inner {
             background-color: #000000;
             color: #ffffff;
             border: 1px solid #4b5563;
             border-radius: 0 !important;
         }
-
         .choices__input {
             background-color: #000000;
             color: #ffffff;
         }
-
         .choices__list--dropdown {
             background-color: #1f2935;
             color: #ffffff;
             border: 1px solid #4b5563;
             border-radius: 0 !important;
         }
-
         .choices__list--dropdown .choices__item,
         .choices__list--dropdown .choices__item--selectable {
             color: #ffffff !important;
         }
-
         .choices__list--dropdown .choices__item--selectable.is-highlighted {
             background-color: #000000;
             color: #ffffff !important;
         }
-
         .choices__item {
             background-color: #1f2935;
             color: #ffffff;
         }
-
         .choices__list--multiple .choices__item {
             border-radius: 0 !important;
             background-color: #4b5563;
             color: #ffffff;
         }
-
         .choices__item--selectable:hover {
             background-color: #4b5563;
             color: #ffffff;
             border-radius: 0 !important;
         }
-
         .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
             background-color: #000000;
         }
-
         .choices__item--choice.is-selected,
         .choices__item--choice.is-highlighted {
             background-color: #4b5563;
             color: #ffffff;
             border-radius: 0 !important;
         }
-
         .choices__button {
             background-color: #4b5563;
             color: #ffffff;
             border: none;
             border-radius: 0 !important;
         }
-
         input[type="radio"] {
             background-color: #374151;
             border: 1px solid #4b5563;
         }
-
         label {
             color: #ffffff;
         }
-
         input[type="radio"]:checked {
             background-color: #4b5563;
             border-color: #ffffff;
         }
-
         body {
             background-color: #323232;
             padding: 10px;
             font-family: sans-serif;
         }
-
         .container {
             max-width: 80%;
             margin: 0 auto;
@@ -117,38 +96,31 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
         .select-container {
             margin-bottom: 16px;
         }
-
         label {
             display: block;
             font-size: 14px;
             color: #fff;
             margin-bottom: 4px;
         }
-
         .chart-wrapper {
             width: 100%;
             height: 100%;
             margin-bottom: 20px;
             position: relative;
         }
-
         canvas {
             width: 100% !important;
             height: 100% !important;
         }
-
         .scale-toggle {
             margin-bottom: 16px;
         }
-
         .chartjs-render-monitor{
             height: 600px !important;
         }
-
         .sort-btn {
             background: #1f2935;
             color: #fff;
@@ -158,13 +130,11 @@
             margin-bottom: 16px;
             cursor: pointer;
         }
-
         .sort-btn:hover {
             background: #374151;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="select-container">
@@ -248,12 +218,9 @@
             "RPi5B_R310_64": "<ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B (64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</li><li>DPS8M R3.1.0 (Clang 20, PGO), 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 (Bookworm)</li></li></ul>",
             "RPi4B_R310_64": "<ul><li><b>RPi4B_R310_64</b><ul><li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 (Clang 20, PGO), 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 (Bookworm)</li></li></ul>",
         };
-
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
-
             { name: 'nqueensx', unit: 'nqueensx MIPS', description: 'Millions of Instructions Per Second' },
-
             { name: 'Pfannkuchen',  unit: 'Pfannkuchen IPS',  description: 'Iterations Per Second' },
             { name: 'Eratosthenes', unit: 'Eratosthenes IPS', description: 'Iterations Per Second' },
             { name: 'Serestone',    unit: 'Serestone IPS',    description: 'Iterations Per Second' },
@@ -262,7 +229,6 @@
             { name: 'Mirestone',    unit: 'Mirestone IPS',    description: 'Iterations Per Second' },
             { name: 'PI',           unit: 'PI calculation seconds',  description: 'Time to complete (in seconds)' },
             { name: 'SR2',          unit: 'SR2 digits calculated', description: 'Digits calculated (in 10 minutes)' },
-
             { name: 'CGMIPS', unit: 'instr_speed MIPS', description: 'instr_speed — Composite Geometric MIPS'},
             { name: 'T1',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 1: lda/sta - even/odd (MIPS)' },
             { name: 'T2',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 2: lda/sta - odd/even (MIPS)' },
@@ -280,7 +246,6 @@
             { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du... (MIPS)' },
             { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29 (MIPS)' },
         ];
-
         const benchmarkData = {
             RPi5B_R310_64: {
                 nqueensx: 10.84,
@@ -310,7 +275,6 @@
                 PI: 521.41,
                 SR2: 1325,
             },
-
             RPi4B_R310_64: {
                 nqueensx: 4.26,
                 CGMIPS: 4.21,
@@ -339,7 +303,6 @@
                 PI: 1369.78,
                 SR2: 509,
             },
-
             RPi3B_R310_64: {
                 nqueensx: 1.56,
                 CGMIPS: 1.56,
@@ -368,7 +331,6 @@
                 PI: 3626.1,
                 SR2: 193,
             },
-
             RPi3B_R310_32: {
                 nqueensx: 1.00,
                 CGMIPS: 0.98,
@@ -397,7 +359,6 @@
                 PI: 5925.9,
                 SR2: 116,
             },
-
             AR750S_R310_32: {
                 nqueensx: 0.63,
                 CGMIPS: 0.65,
@@ -426,7 +387,6 @@
                 PI: 10653.01,
                 SR2: 67,
             },
-
             APU2_R310_64: {
                 nqueensx: 1.97,
                 CGMIPS: 1.98,
@@ -455,7 +415,6 @@
                 PI: 3103.82,
                 SR2: 232,
             },
-
             CN2840_R310_64: {
                 nqueensx: 3.97,
                 CGMIPS: 4.57,
@@ -484,7 +443,6 @@
                 PI: 1411.17,
                 SR2: 510,
             },
-
             C4205U_R310_64: {
                 nqueensx: 6.13,
                 CGMIPS: 6.10,
@@ -513,7 +471,6 @@
                 PI: 946.28,
                 SR2: 728
             },
-
             C2405S_R310_64: {
                 nqueensx: 9.38,
                 CGMIPS: 9.83,
@@ -542,7 +499,6 @@
                 PI: 610.69,
                 SR2: 1180,
             },
-
             i3_8130U_R310_64: {
                 nqueensx: 11.55,
                 CGMIPS: 11.51,
@@ -571,7 +527,6 @@
                 PI: 555.27,
                 SR2: 1232,
             },
-
             i7_8700_R310_64: {
                 nqueensx: 14.1,
                 CGMIPS: 14.23,
@@ -600,7 +555,6 @@
                 PI: 417.25,
                 SR2: 1701,
             },
-
             GHM_R310_64: {
                 nqueensx: 12.3,
                 CGMIPS: 11.83,
@@ -629,7 +583,6 @@
                 PI: 554.61,
                 SR2: 1170,
             },
-
             X2_240E_R310_64: {
                 nqueensx: 6.92,
                 CGMIPS: 7.32,
@@ -658,7 +611,6 @@
                 PI: 851.9,
                 SR2: 838,
             },
-
             THINKPAD_R310_64: {
                 nqueensx: 9.63,
                 CGMIPS: 9.98,
@@ -688,28 +640,22 @@
                 SR2: 1151,
             },
         };
-
         function getColorForSystem(systemName) {
             const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
             const goldenRatio = 0.618033988749895;
             const h = (hash * goldenRatio) % 1;
             return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
         }
-
         document.addEventListener('DOMContentLoaded', function() {
             const systemSelectElement = document.getElementById('systemSelect');
             const benchmarkSelectElement = document.getElementById('benchmarkSelect');
-
             if (!systemSelectElement || !benchmarkSelectElement) {
                 console.error('Select elements not found');
                 return;
             }
-
             const systemSelect = new Choices(systemSelectElement, { searchResultLimit: -1, removeItemButton: true });
             const benchmarkSelect = new Choices(benchmarkSelectElement, { searchResultLimit: -1, removeItemButton: true });
-
             const notesContainer = document.getElementById('system-notes');
-
             systemSelect.passedElement.element.addEventListener('change', function() {
                 const selectedSystems = systemSelect.getValue(true);
                 notesContainer.innerHTML = '';
@@ -720,11 +666,8 @@
                     notesContainer.appendChild(noteElement);
                 });
             });
-
             benchmarkSelect.setChoiceByValue(['nqueensx', 'MCS', 'CGMIPS']);
-
             let charts = [];
-
             let sortLowestToHighest = false;
             const sortBtn = document.getElementById('sortChartsBtn');
             if (sortBtn) {
@@ -734,7 +677,6 @@
                     updateChart();
                 });
             }
-
             function updateChart() {
                 const selectedSystems = systemSelect.getValue(true);
                 const selectedBenchmarks = benchmarkSelect.getValue(true);
@@ -743,7 +685,6 @@
                     charts = [];
                     return;
                 }
-
                 const unitGroups = {};
                 selectedBenchmarks.forEach(benchmark => {
                     const unit = benchmarks.find(b => b.name === benchmark).unit;
@@ -752,13 +693,10 @@
                     }
                     unitGroups[unit].push(benchmark);
                 });
-
                 const scaleType = document.querySelector('input[name="scale"]:checked').value;
-
                 document.getElementById('chartsContainer').innerHTML = '';
                 charts.forEach(chart => chart.destroy());
                 charts = [];
-
                 Object.entries(unitGroups).forEach(([unit, benchmarksInUnit]) => {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'chart-wrapper';
@@ -766,7 +704,6 @@
                     wrapper.appendChild(canvas);
                     document.getElementById('chartsContainer').appendChild(wrapper);
                     const ctx = canvas.getContext('2d');
-
                     let systemsForChart = selectedSystems.slice();
                     if (sortLowestToHighest) {
                         if (benchmarksInUnit.length === 1) {
@@ -786,7 +723,6 @@
                             });
                         }
                     }
-
                     const datasets = systemsForChart.map((system) => ({
                         label: system,
                         data: benchmarksInUnit.map(benchmark => {
@@ -847,14 +783,11 @@
                     charts.push(chart);
                 });
             }
-
             systemSelectElement.addEventListener('change', updateChart);
             benchmarkSelectElement.addEventListener('change', updateChart);
-
             document.querySelectorAll('input[name="scale"]').forEach(radio => {
                 radio.addEventListener('change', updateChart);
             });
-
             updateChart();
         });
     </script>
