@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="choices.min.css" />
     <!-- "https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/scripts/choices.min.js" -->
     <script src="choices.min.js"></script>
+    <!-- "https://cdn.jsdelivr.net/npm/chartjs-plugin-deferred@2.0.0/dist/chartjs-plugin-deferred.min.js" -->
+    <script src="chartjs-plugin-deferred.min.js"></script>
     <style>
         .choices {
             background-color: #000000;
@@ -210,12 +212,13 @@
             </tr>
         </table>
         <div id="chartsContainer"></div>
-        <small><div id="system-notes"></div></small>
+        <div id="system-notes"></div>
     </div>
     <script>
+        Chart.register(ChartDeferred);
         const systemNotes = {
-            "RPi5B_R310_64": "<ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B <small>(64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul>",
-            "RPi4B_R310_64": "<ul><li><b>RPi4B_R310_64</b><ul><li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul>",
+            "RPi5B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td><ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B <small>(64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul></td></tr></table></font>",
+            "RPi4B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td><ul><li><b>RPi4B_R310_64</b><ul><li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul></td></tr></table></font>",
         };
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
@@ -665,7 +668,7 @@
                     notesContainer.appendChild(noteElement);
                 });
             });
-            benchmarkSelect.setChoiceByValue(['nqueensx', 'MCS', 'CGMIPS']);
+            benchmarkSelect.setChoiceByValue(['nqueensx', 'CGMIPS', 'MCS']);
             let charts = [];
             let sortLowestToHighest = false;
             const sortBtn = document.getElementById('sortChartsBtn');
@@ -741,7 +744,7 @@
                         options: {
                             responsive: false,
                             animation: {
-                                duration: 0,
+                                duration: 250,
                             },
                             indexAxis: 'x',
                             maintainAspectRatio: true,
