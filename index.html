@@ -148,13 +148,26 @@
             height: 600px !important;
         }
 
+        .sort-btn {
+            background: #1f2935;
+            color: #fff;
+            border: 1px solid #4b5563;
+            border-radius: 4px;
+            padding: 6px 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        .sort-btn:hover {
+            background: #374151;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="select-container">
-            <label for="systemSelect">Select Systems to Compare:</label>
+            <label for="systemSelect">&nbsp;Select Systems:</label>
             <select id="systemSelect" multiple>
                 <optgroup label="DPS8M R3.10 (64-bit)">
                     <option value="RPi5B_R310_64">Raspberry Pi 5B / Linux / Clang / PGO</option>
@@ -177,7 +190,7 @@
             </select>
         </div>
         <div class="select-container">
-            <label for="benchmarkSelect">Select Benchmarks to Compare:</label>
+            <label for="benchmarkSelect">&nbsp;Select Benchmarks:</label>
             <select id="benchmarkSelect" multiple>
                 <option value="MCS">MCS</option>
                 <option value="nqueensx">nqueensx</option>
@@ -207,18 +220,32 @@
                 <option value="T15">instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29</option>
             </select>
         </div>
-        <div class="scale-toggle">
-            <label>Scale Type:</label>
-            <input type="radio" name="scale" value="linear" checked>&nbsp;<small>Linear</small>
-            <input type="radio" name="scale" value="logarithmic">&nbsp;<small>Logarithmic</small>
-        </div>
+        <table border=0 cellpadding=0>
+            <tr>
+                <td>
+                    <div class="scale-toggle">
+                        <label>Scale Type:</label>
+                        <input type="radio" name="scale" value="linear" checked>&nbsp;<small>Linear</small>&nbsp;
+                        <input type="radio" name="scale" value="logarithmic">&nbsp;<small>Logarithmic</small>&nbsp;
+                    </div>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <label>Sort Order:</label>
+                    <button id="sortChartsBtn" class="sort-btn" type="button">Selected</button>
+                </td>
+            </tr>
+        </table>
         <hr>
         <div id="chartsContainer"></div>
         <small><div id="system-notes"></div></small>
     </div>
     <script>
         const systemNotes = {
-            //"RPi5B_R310_64": "<ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B (64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</li><li>DPS8M R3.1.0 (Clang 20, PGO), 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 (Bookworm)</li></li>",
+            "RPi5B_R310_64": "<ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B (64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</li><li>DPS8M R3.1.0 (Clang 20, PGO), 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 (Bookworm)</li></li></ul>",
+            "RPi4B_R310_64": "<ul><li><b>RPi4B_R310_64</b><ul><li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 (Clang 20, PGO), 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 (Bookworm)</li></li></ul>",
         };
 
         const benchmarks = [
@@ -232,31 +259,28 @@
             { name: 'Romberg',      unit: 'Romberg IPS',      description: 'Iterations Per Second' },
             { name: 'Trapezoid',    unit: 'Trapezoid IPS',    description: 'Iterations Per Second' },
             { name: 'Mirestone',    unit: 'Mirestone IPS',    description: 'Iterations Per Second' },
-
             { name: 'PI',           unit: 'PI calculation seconds',  description: 'Time to complete (in seconds)' },
-
             { name: 'SR2',          unit: 'SR2 digits calculated', description: 'Digits calculated (in 10 minutes)' },
 
             { name: 'CGMIPS', unit: 'instr_speed MIPS', description: 'instr_speed — Composite Geometric MIPS'},
-            { name: 'T1',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 1: lda/sta - even/odd (MIPS)'                      },
-            { name: 'T2',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 2: lda/sta - odd/even (MIPS)'                      },
-            { name: 'T3',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 3: lda/lda/lda... (MIPS)'                          },
-            { name: 'T4',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 4: lda/sta - even/odd bit2 (MIPS)'                 },
-            { name: 'T5',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 5: eppbp/spribp - even/odd (MIPS)'                 },
-            { name: 'T6',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 6: eppbp/spribp - odd/even (MIPS)'                 },
-            { name: 'T7',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 7: eppbp/spribp - even/odd indirect (MIPS)'        },
-            { name: 'T8',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 8: eppbp/spribp - odd/even indirect (MIPS)'        },
-            { name: 'T9',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 9: eppbp/spribp - even/odd bit29 (MIPS)'           },
+            { name: 'T1',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 1: lda/sta - even/odd (MIPS)' },
+            { name: 'T2',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 2: lda/sta - odd/even (MIPS)' },
+            { name: 'T3',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 3: lda/lda/lda... (MIPS)' },
+            { name: 'T4',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 4: lda/sta - even/odd bit2 (MIPS)' },
+            { name: 'T5',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 5: eppbp/spribp - even/odd (MIPS)' },
+            { name: 'T6',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 6: eppbp/spribp - odd/even (MIPS)' },
+            { name: 'T7',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 7: eppbp/spribp - even/odd indirect (MIPS)' },
+            { name: 'T8',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 8: eppbp/spribp - odd/even indirect (MIPS)' },
+            { name: 'T9',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 9: eppbp/spribp - even/odd bit29 (MIPS)' },
             { name: 'T10',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 10: eppbp/spribp - even/odd bit29 indirect (MIPS)' },
             { name: 'T11',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 11: eppbp/spribp - odd/even bit29 indirect (MIPS)' },
-            { name: 'T12',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 12: random mix (MIPS)'                             },
-            { name: 'T13',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 13: lda 0,du... (MIPS)'                            },
-            { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du... (MIPS)'                            },
-            { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29 (MIPS)'         },
+            { name: 'T12',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 12: random mix (MIPS)' },
+            { name: 'T13',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 13: lda 0,du... (MIPS)' },
+            { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du... (MIPS)' },
+            { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29 (MIPS)' },
         ];
 
         const benchmarkData = {
-
             RPi5B_R310_64: {
                 nqueensx: 10.84,
                 CGMIPS: 10.24,
@@ -668,7 +692,7 @@
             const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
             const goldenRatio = 0.618033988749895;
             const h = (hash * goldenRatio) % 1;
-            return `hsl(${Math.round(h * 360)}, 80%, 60%)`;
+            return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -699,6 +723,16 @@
             benchmarkSelect.setChoiceByValue(['nqueensx', 'MCS', 'CGMIPS']);
 
             let charts = [];
+
+            let sortLowestToHighest = false;
+            const sortBtn = document.getElementById('sortChartsBtn');
+            if (sortBtn) {
+                sortBtn.addEventListener('click', function() {
+                    sortLowestToHighest = !sortLowestToHighest;
+                    sortBtn.textContent = sortLowestToHighest ? "Sorted" : "Selected";
+                    updateChart();
+                });
+            }
 
             function updateChart() {
                 const selectedSystems = systemSelect.getValue(true);
@@ -732,10 +766,30 @@
                     document.getElementById('chartsContainer').appendChild(wrapper);
                     const ctx = canvas.getContext('2d');
 
-                    const datasets = selectedSystems.map((system) => ({
+                    let systemsForChart = selectedSystems.slice();
+                    if (sortLowestToHighest) {
+                        if (benchmarksInUnit.length === 1) {
+                            const bench = benchmarksInUnit[0];
+                            systemsForChart.sort((a, b) => {
+                                const va = benchmarkData[a]?.[bench];
+                                const vb = benchmarkData[b]?.[bench];
+                                if (va === undefined) return 1;
+                                if (vb === undefined) return -1;
+                                return va - vb;
+                            });
+                        } else {
+                            systemsForChart.sort((a, b) => {
+                                const sumA = benchmarksInUnit.reduce((acc, bench) => acc + (benchmarkData[a]?.[bench] ?? 0), 0);
+                                const sumB = benchmarksInUnit.reduce((acc, bench) => acc + (benchmarkData[b]?.[bench] ?? 0), 0);
+                                return sumA - sumB;
+                            });
+                        }
+                    }
+
+                    const datasets = systemsForChart.map((system) => ({
                         label: system,
                         data: benchmarksInUnit.map(benchmark => {
-                            const value = benchmarkData[system][benchmark];
+                            const value = benchmarkData[system]?.[benchmark];
                             return value === 0.0 ? null : value;
                         }),
                         backgroundColor: getColorForSystem(system),
@@ -799,14 +853,6 @@
             document.querySelectorAll('input[name="scale"]').forEach(radio => {
                 radio.addEventListener('change', updateChart);
             });
-
-            /* Causes jumpiness on iOS:
-            window.addEventListener('resize', () => {
-                const scrollY = window.scrollY;
-                updateChart();
-                window.scrollTo(0, scrollY);
-            });
-            */
 
             updateChart();
         });
