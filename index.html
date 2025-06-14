@@ -135,6 +135,42 @@
         .sort-btn:hover {
             background: #374151;
         }
+        /* Table styles */
+        .sortable-th {
+            cursor: pointer;
+            position: relative;
+        }
+        .sortable-th:after {
+            content: ' ';
+            display: inline-block;
+            margin-left: 4px;
+        }
+        .sortable-th.sorted-asc:after {
+            content: '▲';
+            font-size: 0.7em;
+        }
+        .sortable-th.sorted-desc:after {
+            content: '▼';
+            font-size: 0.7em;
+        }
+        #dynamicTable {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 24px;
+            background: #222;
+        }
+        #dynamicTable th, #dynamicTable td {
+            border: 1px solid #4b5563;
+            padding: 5px 10px;
+            color: #fff;
+            text-align: center;
+        }
+        #dynamicTable th {
+            background: #1f2935;
+        }
+        #dynamicTable tr:hover td {
+            background: #2d3748;
+        }
     </style>
 </head>
 <body>
@@ -206,13 +242,14 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-                    <label>Sort Order:</label>
-                    <button id="sortChartsBtn" class="sort-btn" type="button">Selected</button>
+                    <label>Sorting:</label>
+                    <button id="sortChartsBtn" class="sort-btn" type="button">Disabled</button>
                 </td>
             </tr>
         </table>
+        <div id="tableContainer"></div>
         <div id="chartsContainer"></div>
-        <div id="system-notes"></div>
+        <div id="notesContainer"></div>
     </div>
     <script>
         Chart.register(ChartDeferred);
@@ -648,6 +685,7 @@
             const h = (hash * goldenRatio) % 1;
             return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
         }
+        let tableSort = { col: 0, asc: true };
         document.addEventListener('DOMContentLoaded', function() {
             const systemSelectElement = document.getElementById('systemSelect');
             const benchmarkSelectElement = document.getElementById('benchmarkSelect');
@@ -657,7 +695,7 @@
             }
             const systemSelect = new Choices(systemSelectElement, { searchResultLimit: -1, removeItemButton: true });
             const benchmarkSelect = new Choices(benchmarkSelectElement, { searchResultLimit: -1, removeItemButton: true });
-            const notesContainer = document.getElementById('system-notes');
+            const notesContainer = document.getElementById('notesContainer');
             systemSelect.passedElement.element.addEventListener('change', function() {
                 const selectedSystems = systemSelect.getValue(true);
                 notesContainer.innerHTML = '';
@@ -668,14 +706,14 @@
                     notesContainer.appendChild(noteElement);
                 });
             });
-            benchmarkSelect.setChoiceByValue(['nqueensx', 'CGMIPS', 'MCS']);
+            benchmarkSelect.setChoiceByValue(['CGMIPS', 'nqueensx', 'MCS', 'PI']);
             let charts = [];
             let sortLowestToHighest = false;
             const sortBtn = document.getElementById('sortChartsBtn');
             if (sortBtn) {
                 sortBtn.addEventListener('click', function() {
                     sortLowestToHighest = !sortLowestToHighest;
-                    sortBtn.textContent = sortLowestToHighest ? "Sorted" : "Selected";
+                    sortBtn.textContent = sortLowestToHighest ? "Enabled" : "Disabled";
                     updateChart();
                 });
             }
@@ -685,6 +723,7 @@
                 if (selectedSystems.length === 0 || selectedBenchmarks.length === 0) {
                     document.getElementById('chartsContainer').innerHTML = '';
                     charts = [];
+                    updateTable();
                     return;
                 }
                 const unitGroups = {};
@@ -748,7 +787,7 @@
                             },
                             indexAxis: 'x',
                             maintainAspectRatio: true,
-                            aspectRatio: 1.2,
+                            aspectRatio: 1.8,
                             scales: {
                                 y: {
                                     type: scaleType,
@@ -784,6 +823,66 @@
                     });
                     charts.push(chart);
                 });
+                updateTable();
+            }
+            // -------------- DYNAMIC TABLE LOGIC --------------------------
+            function renderDynamicTable(selectedSystems, selectedBenchmarks) {
+                const tableContainer = document.getElementById('tableContainer');
+                if (!selectedSystems.length || !selectedBenchmarks.length) {
+                    tableContainer.innerHTML = '';
+                    return;
+                }
+                // Build table
+                let html = '<table id="dynamicTable">';
+                // Header
+                html += '<thead><tr>';
+                html += `<th class="sortable-th${tableSort.col === 0 ? ' sorted-' + (tableSort.asc ? 'asc' : 'desc') : ''}" data-col="0"><b>System</b></th>`;
+                selectedBenchmarks.forEach((bench, i) => {
+                    html += `<th class="sortable-th${tableSort.col === i + 1 ? ' sorted-' + (tableSort.asc ? 'asc' : 'desc') : ''}" data-col="${i + 1}"><b>${bench}</b></th>`;
+                });
+                html += '</tr></thead>';
+                // Body
+                let rows = selectedSystems.map(sys => {
+                    return [
+                        sys,
+                        ...selectedBenchmarks.map(b => {
+                            let v = (benchmarkData[sys] && benchmarkData[sys][b] !== undefined) ? benchmarkData[sys][b] : '';
+                            return (v !== '' && !isNaN(v)) ? v : '';
+                        })
+                    ];
+                });
+                // Sorting
+                if (tableSort.col !== null) {
+                    rows.sort((a, b) => {
+                        let va = a[tableSort.col], vb = b[tableSort.col];
+                        if (!isNaN(va) && !isNaN(vb) && va !== '' && vb !== '') {
+                            va = parseFloat(va); vb = parseFloat(vb);
+                            return tableSort.asc ? va - vb : vb - va;
+                        } else {
+                            return tableSort.asc ? ('' + va).localeCompare('' + vb) : ('' + vb).localeCompare('' + va);
+                        }
+                    });
+                }
+                html += '<tbody>';
+                rows.forEach(row => {
+                    html += '<tr>' + row.map(cell => `<td><code>${cell}</code></td>`).join('') + '</tr>';
+                });
+                html += '</tbody></table>';
+                tableContainer.innerHTML = html;
+                // Add header click listeners
+                document.querySelectorAll('#dynamicTable th.sortable-th').forEach(th => {
+                    th.onclick = function () {
+                        let col = parseInt(this.getAttribute('data-col'), 10);
+                        if (tableSort.col === col) tableSort.asc = !tableSort.asc;
+                        else { tableSort.col = col; tableSort.asc = true; }
+                        renderDynamicTable(selectedSystems, selectedBenchmarks);
+                    }
+                });
+            }
+            function updateTable() {
+                const selectedSystems = systemSelect.getValue(true);
+                const selectedBenchmarks = benchmarkSelect.getValue(true);
+                renderDynamicTable(selectedSystems, selectedBenchmarks);
             }
             systemSelectElement.addEventListener('change', updateChart);
             benchmarkSelectElement.addEventListener('change', updateChart);
