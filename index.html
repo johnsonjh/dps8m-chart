@@ -171,6 +171,14 @@
         .dynamicTable tr:hover td {
             background: #2d3748;
         }
+       .color-dot {
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          border-radius: 50%;
+          margin-right: 0.5em;
+          vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -860,7 +868,7 @@
                     html += '</tr></thead>';
                     let rows = systems.map(sys => {
                         return [
-                            sys,
+                            `<span class="color-dot" style="background-color: ${getColorForSystem(sys)}"></span>${sys}`,
                             ...benches.map(b => {
                                 let v = (benchmarkData[sys] && benchmarkData[sys][b] !== undefined) ? benchmarkData[sys][b] : '';
                                 if (v !== '' && !isNaN(v)) {
