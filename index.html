@@ -882,6 +882,11 @@
                     if (sortState.col !== null) {
                         rows.sort((a, b) => {
                             let va = a[sortState.col], vb = b[sortState.col];
+                            if (sortState.col === 0) {
+                                va = va.replace(/<[^>]*>/g, '');
+                                vb = vb.replace(/<[^>]*>/g, '');
+                                return sortState.asc ? va.localeCompare(vb) : vb.localeCompare(va);
+                            }
                             if (!isNaN(va) && !isNaN(vb) && va !== '' && vb !== '') {
                                 va = parseFloat(va); vb = parseFloat(vb);
                                 return sortState.asc ? va - vb : vb - va;
