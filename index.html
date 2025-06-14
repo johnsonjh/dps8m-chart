@@ -153,22 +153,22 @@
             content: '▼';
             font-size: 0.7em;
         }
-        #dynamicTable {
+        .dynamicTable {
             border-collapse: collapse;
             width: 100%;
             margin-top: 24px;
             background: #222;
         }
-        #dynamicTable th, #dynamicTable td {
+        .dynamicTable th, .dynamicTable td {
             border: 1px solid #4b5563;
             padding: 5px 10px;
             color: #fff;
             text-align: center;
         }
-        #dynamicTable th {
+        .dynamicTable th {
             background: #1f2935;
         }
-        #dynamicTable tr:hover td {
+        .dynamicTable tr:hover td {
             background: #2d3748;
         }
     </style>
@@ -242,20 +242,31 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-                    <label>Sorting:</label>
+                    <label>Chart Sorting:</label>
                     <button id="sortChartsBtn" class="sort-btn" type="button">Disabled</button>
                 </td>
             </tr>
         </table>
+        <hr>
         <div id="tableContainer"></div>
+        <br>
         <div id="chartsContainer"></div>
         <div id="notesContainer"></div>
     </div>
     <script>
         Chart.register(ChartDeferred);
         const systemNotes = {
-            "RPi5B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td><ul><li><b>RPi5B_R310_64</b><ul><li>Raspberry Pi 5B <small>(64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul></td></tr></table></font>",
-            "RPi4B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td><ul><li><b>RPi4B_R310_64</b><ul><li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li><li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li></li></ul></td></tr></table></font>",
+            "RPi5B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td>" +
+                                "<ul><li><b>RPi5B_R310_64</b><ul>" +
+                                "<li>Raspberry Pi 5B <small>(64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li>" +
+                                "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li>" +
+                                "<li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                                "</li></ul></td></tr></table></font>",
+            "RPi4B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td>" +
+                                "<ul><li><b>RPi4B_R310_64</b><ul>" +
+                                "<li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li>" +
+                                "<li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                                "</li></ul></td></tr></table></font>",
         };
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
@@ -685,7 +696,11 @@
             const h = (hash * g) % 1;
             return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
         }
-        let tableSort = { col: 0, asc: true };
+        let tableSortT = { col: 0, asc: true };
+        let tableSortOther = { col: 0, asc: true };
+        const MIPS_benchmarks = [
+            "nqueensx","CGMIPS","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12","T13","T14","T15"
+        ];
         document.addEventListener('DOMContentLoaded', function() {
             const systemSelectElement = document.getElementById('systemSelect');
             const benchmarkSelectElement = document.getElementById('benchmarkSelect');
@@ -783,7 +798,7 @@
                         options: {
                             responsive: false,
                             animation: {
-                                duration: 250,
+                                duration: 300,
                             },
                             indexAxis: 'x',
                             maintainAspectRatio: true,
@@ -831,45 +846,71 @@
                     tableContainer.innerHTML = '';
                     return;
                 }
-                let html = '<table id="dynamicTable">';
-                html += '<thead><tr>';
-                html += `<th class="sortable-th${tableSort.col === 0 ? ' sorted-' + (tableSort.asc ? 'asc' : 'desc') : ''}" data-col="0"><b>System</b></th>`;
-                selectedBenchmarks.forEach((bench, i) => {
-                    html += `<th class="sortable-th${tableSort.col === i + 1 ? ' sorted-' + (tableSort.asc ? 'asc' : 'desc') : ''}" data-col="${i + 1}"><b>${bench}</b></th>`;
-                });
-                html += '</tr></thead>';
-                // Body
-                let rows = selectedSystems.map(sys => {
-                    return [
-                        sys,
-                        ...selectedBenchmarks.map(b => {
-                            let v = (benchmarkData[sys] && benchmarkData[sys][b] !== undefined) ? benchmarkData[sys][b] : '';
-                            return (v !== '' && !isNaN(v)) ? v : '';
-                        })
-                    ];
-                });
-                if (tableSort.col !== null) {
-                    rows.sort((a, b) => {
-                        let va = a[tableSort.col], vb = b[tableSort.col];
-                        if (!isNaN(va) && !isNaN(vb) && va !== '' && vb !== '') {
-                            va = parseFloat(va); vb = parseFloat(vb);
-                            return tableSort.asc ? va - vb : vb - va;
-                        } else {
-                            return tableSort.asc ? ('' + va).localeCompare('' + vb) : ('' + vb).localeCompare('' + va);
-                        }
+                const selectedT = selectedBenchmarks.filter(b => MIPS_benchmarks.includes(b));
+                const selectedOther = selectedBenchmarks.filter(b => !MIPS_benchmarks.includes(b));
+                let html = '';
+                function buildTable(systems, benches, tableId, sortState) {
+                    if (!benches.length) return '';
+                    let html = `<table id="${tableId}" class="dynamicTable">`;
+                    html += '<thead><tr>';
+                    html += `<th class="sortable-th${sortState.col === 0 ? ' sorted-' + (sortState.asc ? 'asc' : 'desc') : ''}" data-col="0"><b>System</b></th>`;
+                    benches.forEach((bench, i) => {
+                        html += `<th class="sortable-th${sortState.col === i + 1 ? ' sorted-' + (sortState.asc ? 'asc' : 'desc') : ''}" data-col="${i + 1}"><b>${bench}</b></th>`;
                     });
+                    html += '</tr></thead>';
+                    let rows = systems.map(sys => {
+                        return [
+                            sys,
+                            ...benches.map(b => {
+                                let v = (benchmarkData[sys] && benchmarkData[sys][b] !== undefined) ? benchmarkData[sys][b] : '';
+                                if (v !== '' && !isNaN(v)) {
+                                    v = (Math.round(parseFloat(v) * 100) / 100).toFixed(2);
+                                    return v;
+                                }
+                                return '';
+                            })
+                        ];
+                    });
+                    if (sortState.col !== null) {
+                        rows.sort((a, b) => {
+                            let va = a[sortState.col], vb = b[sortState.col];
+                            if (!isNaN(va) && !isNaN(vb) && va !== '' && vb !== '') {
+                                va = parseFloat(va); vb = parseFloat(vb);
+                                return sortState.asc ? va - vb : vb - va;
+                            } else {
+                                return sortState.asc ? ('' + va).localeCompare('' + vb) : ('' + vb).localeCompare('' + va);
+                            }
+                        });
+                    }
+                    html += '<tbody>';
+                    rows.forEach(row => {
+                        html += '<tr>' + row.map(cell => `<td><code>${cell}</code></td>`).join('') + '</tr>';
+                    });
+                    html += '</tbody></table>';
+                    return html;
                 }
-                html += '<tbody>';
-                rows.forEach(row => {
-                    html += '<tr>' + row.map(cell => `<td><code>${cell}</code></td>`).join('') + '</tr>';
-                });
-                html += '</tbody></table>';
+                if (selectedT.length) {
+                    html += `<p><div><font size=-1>MIPS Benchmarks:</font></div></p>`;
+                    html += buildTable(selectedSystems, selectedT, "dynamicTableT", tableSortT);
+                }
+                if (selectedOther.length) {
+                    html += `<p><div style="margin-top:1.5eml"><font size=-1>Other Benchmarks:</font></div></p>`;
+                    html += buildTable(selectedSystems, selectedOther, "dynamicTableOther", tableSortOther);
+                }
                 tableContainer.innerHTML = html;
-                document.querySelectorAll('#dynamicTable th.sortable-th').forEach(th => {
+                document.querySelectorAll('#dynamicTableT th.sortable-th').forEach(th => {
                     th.onclick = function () {
                         let col = parseInt(this.getAttribute('data-col'), 10);
-                        if (tableSort.col === col) tableSort.asc = !tableSort.asc;
-                        else { tableSort.col = col; tableSort.asc = true; }
+                        if (tableSortT.col === col) tableSortT.asc = !tableSortT.asc;
+                        else { tableSortT.col = col; tableSortT.asc = true; }
+                        renderDynamicTable(selectedSystems, selectedBenchmarks);
+                    }
+                });
+                document.querySelectorAll('#dynamicTableOther th.sortable-th').forEach(th => {
+                    th.onclick = function () {
+                        let col = parseInt(this.getAttribute('data-col'), 10);
+                        if (tableSortOther.col === col) tableSortOther.asc = !tableSortOther.asc;
+                        else { tableSortOther.col = col; tableSortOther.asc = true; }
                         renderDynamicTable(selectedSystems, selectedBenchmarks);
                     }
                 });
@@ -882,7 +923,7 @@
             systemSelectElement.addEventListener('change', updateChart);
             benchmarkSelectElement.addEventListener('change', updateChart);
             document.querySelectorAll('input[name="scale"]').forEach(radio => {
-                radio.addEventListener('change', updateChart);
+            radio.addEventListener('change', updateChart);
             });
             updateChart();
         });
