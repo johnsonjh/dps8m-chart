@@ -179,6 +179,9 @@
           margin-right: 0.5em;
           vertical-align: middle;
         }
+        .system-label {
+          white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -704,8 +707,8 @@
             const h = (hash * g) % 1;
             return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
         }
-        let tableSortT = { col: 0, asc: true };
-        let tableSortOther = { col: 0, asc: true };
+        let tableSortMIPS = { col: null, asc: true };
+        let tableSortOther = { col: null, asc: true };
         const MIPS_benchmarks = [
             "nqueensx","CGMIPS","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12","T13","T14","T15"
         ];
@@ -861,14 +864,14 @@
                     if (!benches.length) return '';
                     let html = `<table id="${tableId}" class="dynamicTable">`;
                     html += '<thead><tr>';
-                    html += `<th class="sortable-th${sortState.col === 0 ? ' sorted-' + (sortState.asc ? 'asc' : 'desc') : ''}" data-col="0"><b>System</b></th>`;
+                    html += `<th class="sortable-th${(sortState.col === 0 ? ' sorted-' + (sortState.asc ? 'asc' : 'desc') : '')}" data-col="0"><b>System</b></th>`;
                     benches.forEach((bench, i) => {
                         html += `<th class="sortable-th${sortState.col === i + 1 ? ' sorted-' + (sortState.asc ? 'asc' : 'desc') : ''}" data-col="${i + 1}"><b>${bench}</b></th>`;
                     });
                     html += '</tr></thead>';
                     let rows = systems.map(sys => {
                         return [
-                            `<span class="color-dot" style="background-color: ${getColorForSystem(sys)}"></span>${sys}`,
+                            `<span class="system-label"><span class="color-dot" style="background-color: ${getColorForSystem(sys)}"></span>${sys}</span>`,
                             ...benches.map(b => {
                                 let v = (benchmarkData[sys] && benchmarkData[sys][b] !== undefined) ? benchmarkData[sys][b] : '';
                                 if (v !== '' && !isNaN(v)) {
@@ -904,7 +907,7 @@
                 }
                 if (selectedT.length) {
                     html += `<p><div><font size=-1>MIPS Benchmarks:</font></div></p>`;
-                    html += buildTable(selectedSystems, selectedT, "dynamicTableT", tableSortT);
+                    html += buildTable(selectedSystems, selectedT, "dynamicTableT", tableSortMIPS);
                 }
                 if (selectedOther.length) {
                     html += `<p><div style="margin-top:1.5eml"><font size=-1>Other Benchmarks:</font></div></p>`;
@@ -914,8 +917,8 @@
                 document.querySelectorAll('#dynamicTableT th.sortable-th').forEach(th => {
                     th.onclick = function () {
                         let col = parseInt(this.getAttribute('data-col'), 10);
-                        if (tableSortT.col === col) tableSortT.asc = !tableSortT.asc;
-                        else { tableSortT.col = col; tableSortT.asc = true; }
+                        if (tableSortMIPS.col === col) tableSortMIPS.asc = !tableSortMIPS.asc;
+                        else { tableSortMIPS.col = col; tableSortMIPS.asc = true; }
                         renderDynamicTable(selectedSystems, selectedBenchmarks);
                     }
                 });
