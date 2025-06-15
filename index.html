@@ -205,21 +205,21 @@
         <div class="select-container">
             <label for="systemSelect">&nbsp;Select Systems:</label>
             <select id="systemSelect" multiple>
-                <optgroup label="DPS8M R3.1.0 [64-bit]">
+                <optgroup label="DPS8M R3.1.0 [64‑bit]">
                     <option value="RPi5B_R310_64">Raspberry Pi 5B / Linux / Clang / PGO</option>
                     <option value="RPi4B_R310_64">Raspberry Pi 4B / Linux / Clang / PGO</option>
                     <option value="RPi3B_R310_64">Raspberry Pi 3B / Linux / Clang 20 / PGO</option>
                     <option value="APU2_R310_64">PC Engines APU2 / Linux / GCC / PGO</option>
-                    <option value="CN2840_R310_64">iC-N2840 / Linux / GCC / PGO</option>
-                    <option value="C4205U_R310_64">iC-4205U / Linux / GCC / PGO</option>
-                    <option value="C2405S_R310_64">iC-2405S / Linux / GCC / PGO</option>
-                    <option value="i3_8130U_R310_64">i3-8130U / Linux / GCC / PGO</option>
-                    <option value="i7_8700_R310_64">i7-8700 / Linux / GCC / PGO</option>
+                    <option value="CN2840_R310_64">iC‑N2840 / Linux / GCC / PGO</option>
+                    <option value="C4205U_R310_64">iC‑4205U / Linux / GCC / PGO</option>
+                    <option value="C2405S_R310_64">iC‑2405S / Linux / GCC / PGO</option>
+                    <option value="i3_8130U_R310_64">i3‑8130U / Linux / GCC / PGO</option>
+                    <option value="i7_8700_R310_64">i7‑8700 / Linux / GCC / PGO</option>
                     <option value="GHM_R310_64">GHM / Linux (KVM) / GCC / PGO</option>
-                    <option value="X2_240E_R310_64">X2-240e / Linux / GCC / PGO</option>
+                    <option value="X2_240E_R310_64">X2‑240e / Linux / GCC / PGO</option>
                     <option value="Thinkpad_R310_64">Thinkpad / Linux (KVM) / GCC / PGO</option>
                 </optgroup>
-                <optgroup label="DPS8M R3.1.0 [32-bit]">
+                <optgroup label="DPS8M R3.1.0 [32‑bit]">
                     <option value="RPi3B_R310_32">Raspberry Pi 3B / Linux / GCC 14.3 / PGO</option>
                     <option value="AR750S_R310_32">AR750S / Linux / GCC / PGO, NO_LOCKLESS</option>
                 </optgroup>
@@ -239,21 +239,21 @@
                 <option value="Trapezoid">mbench — Trapezoid</option>
                 <option value="Mirestone">mbench — Mirestone</option>
                 <option value="CGMIPS">instr_speed — Composite Geometric MIPS</option>
-                <option value="T1">instr_speed — TEST 1: lda/sta - even/odd</option>
-                <option value="T2">instr_speed — TEST 2: lda/sta - odd/even</option>
+                <option value="T1">instr_speed — TEST 1: lda/sta ‑ even/odd</option>
+                <option value="T2">instr_speed — TEST 2: lda/sta ‑ odd/even</option>
                 <option value="T3">instr_speed — TEST 3: lda/lda/lda…</option>
-                <option value="T4">instr_speed — TEST 4: lda/sta - even/odd bit29</option>
-                <option value="T5">instr_speed — TEST 5: eppbp/spribp - even/odd</option>
-                <option value="T6">instr_speed — TEST 6: eppbp/spribp - odd/even</option>
-                <option value="T7">instr_speed — TEST 7: eppbp/spribp - even/odd indirect</option>
-                <option value="T8">instr_speed — TEST 8: eppbp/spribp - odd/even indirect</option>
-                <option value="T9">instr_speed — TEST 9: eppbp/spribp - even/odd bit29</option>
-                <option value="T10">instr_speed — TEST 10: eppbp/spribp - even/odd bit29 indirect</option>
-                <option value="T11">instr_speed — TEST 11: eppbp/spribp - odd/even bit29 indirect</option>
+                <option value="T4">instr_speed — TEST 4: lda/sta ‑ even/odd bit29</option>
+                <option value="T5">instr_speed — TEST 5: eppbp/spribp ‑ even/odd</option>
+                <option value="T6">instr_speed — TEST 6: eppbp/spribp ‑ odd/even</option>
+                <option value="T7">instr_speed — TEST 7: eppbp/spribp ‑ even/odd indirect</option>
+                <option value="T8">instr_speed — TEST 8: eppbp/spribp ‑ odd/even indirect</option>
+                <option value="T9">instr_speed — TEST 9: eppbp/spribp ‑ even/odd bit29</option>
+                <option value="T10">instr_speed — TEST 10: eppbp/spribp ‑ even/odd bit29 indirect</option>
+                <option value="T11">instr_speed — TEST 11: eppbp/spribp ‑ odd/even bit29 indirect</option>
                 <option value="T12">instr_speed — TEST 12: random mix</option>
                 <option value="T13">instr_speed — TEST 13: lda 0,du…</option>
                 <option value="T14">instr_speed — TEST 14: nop 0,du…</option>
-                <option value="T15">instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29</option>
+                <option value="T15">instr_speed — TEST 15: lprpbp/sprpbp ‑ even/odd bit29</option>
             </select>
         </div>
         <table border=0 cellpadding=0>
@@ -279,21 +279,35 @@
         <br>
         <div id="chartsContainer"></div>
         <div id="notesContainer"></div>
+        <div id="instructions" style="margin-bottom: 12px; color: #ffd; background: #222; padding: 8px; border-radius: 4px;">
+            <table border=0 cellpadding=3 width=100%>
+                <tr>
+                    <td style="vertical-align: middle; text-align: right;">
+                        <font size=+6>⚠</font>
+                    </td>
+                    <td style="vertical-align: middle; text-align: left;">
+                        <br>Select one or more systems and benchmarks for comparison.<br>
+                        <small>Users on mobile devices should reduce their browser zoom‑level before making a selection.</small>
+                        <br><br>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     <script>
         Chart.register(ChartDeferred);
         const systemNotes = {
-            "RPi5B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td>" +
+            "RPi5B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#1f2935><tr><td>" +
                                 "<ul><li><b>RPi5B_R310_64</b><ul>" +
-                                "<li>Raspberry Pi 5B <small>(64-bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li>" +
-                                "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li>" +
-                                "<li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
-                                "</li></ul></td></tr></table></font>",
-            "RPi4B_R310_64": "<font size=-1><table margin=4 border=0 width=100%><tr><td>" +
+                                "<li>Raspberry Pi 5B <small>(64‑bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li>" +
+                                "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
+                                "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                                "</li></ul></td></tr></table></font></p>",
+            "RPi4B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#1f2935><tr><td>" +
                                 "<ul><li><b>RPi4B_R310_64</b><ul>" +
-                                "<li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64-bit</li>" +
-                                "<li>64-bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
-                                "</li></ul></td></tr></table></font>",
+                                "<li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
+                                "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                                "</li></ul></td></tr></table></font></p>",
         };
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
@@ -307,21 +321,21 @@
             { name: 'PI',           unit: 'PI calculation seconds',  description: 'Time to complete (in seconds)' },
             { name: 'SR2',          unit: 'SR2 digits calculated', description: 'Digits calculated (in 10 minutes)' },
             { name: 'CGMIPS', unit: 'instr_speed MIPS', description: 'instr_speed — Composite Geometric MIPS'},
-            { name: 'T1',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 1: lda/sta - even/odd (MIPS)' },
-            { name: 'T2',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 2: lda/sta - odd/even (MIPS)' },
-            { name: 'T3',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 3: lda/lda/lda... (MIPS)' },
-            { name: 'T4',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 4: lda/sta - even/odd bit2 (MIPS)' },
-            { name: 'T5',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 5: eppbp/spribp - even/odd (MIPS)' },
-            { name: 'T6',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 6: eppbp/spribp - odd/even (MIPS)' },
-            { name: 'T7',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 7: eppbp/spribp - even/odd indirect (MIPS)' },
-            { name: 'T8',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 8: eppbp/spribp - odd/even indirect (MIPS)' },
-            { name: 'T9',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 9: eppbp/spribp - even/odd bit29 (MIPS)' },
-            { name: 'T10',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 10: eppbp/spribp - even/odd bit29 indirect (MIPS)' },
-            { name: 'T11',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 11: eppbp/spribp - odd/even bit29 indirect (MIPS)' },
+            { name: 'T1',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 1: lda/sta ‑ even/odd (MIPS)' },
+            { name: 'T2',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 2: lda/sta ‑ odd/even (MIPS)' },
+            { name: 'T3',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 3: lda/lda/lda… (MIPS)' },
+            { name: 'T4',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 4: lda/sta ‑ even/odd bit2 (MIPS)' },
+            { name: 'T5',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 5: eppbp/spribp ‑ even/odd (MIPS)' },
+            { name: 'T6',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 6: eppbp/spribp ‑ odd/even (MIPS)' },
+            { name: 'T7',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 7: eppbp/spribp ‑ even/odd indirect (MIPS)' },
+            { name: 'T8',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 8: eppbp/spribp ‑ odd/even indirect (MIPS)' },
+            { name: 'T9',     unit: 'instr_speed MIPS', description: 'instr_speed — TEST 9: eppbp/spribp ‑ even/odd bit29 (MIPS)' },
+            { name: 'T10',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 10: eppbp/spribp ‑ even/odd bit29 indirect (MIPS)' },
+            { name: 'T11',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 11: eppbp/spribp ‑ odd/even bit29 indirect (MIPS)' },
             { name: 'T12',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 12: random mix (MIPS)' },
-            { name: 'T13',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 13: lda 0,du... (MIPS)' },
-            { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du... (MIPS)' },
-            { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp - even/odd bit29 (MIPS)' },
+            { name: 'T13',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 13: lda 0,du… (MIPS)' },
+            { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du… (MIPS)' },
+            { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp ‑ even/odd bit29 (MIPS)' },
         ];
         const benchmarkData = {
             RPi5B_R310_64: {
@@ -730,6 +744,14 @@
         ];
         document.addEventListener('DOMContentLoaded', function() {
             const systemSelectElement = document.getElementById('systemSelect');
+            const instructionsDiv = document.getElementById('instructions');
+            function maybeHideInstructions() {
+                if (systemSelectElement.selectedOptions && systemSelectElement.selectedOptions.length > 0) {
+                    instructionsDiv.style.display = 'none';
+                }
+            }
+            systemSelectElement.addEventListener('change', maybeHideInstructions);
+            maybeHideInstructions();
             const benchmarkSelectElement = document.getElementById('benchmarkSelect');
             if (!systemSelectElement || !benchmarkSelectElement) {
                 console.error('Select elements not found');
@@ -747,6 +769,7 @@
                     noteElement.innerHTML = `${systemNotes[system] || ''}`;
                     notesContainer.appendChild(noteElement);
                 });
+                maybeHideInstructions();
             });
             benchmarkSelect.setChoiceByValue(['CGMIPS', 'nqueensx', 'MCS', 'PI']);
             let charts = [];
