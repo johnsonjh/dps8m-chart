@@ -198,6 +198,11 @@
         .system-label {
           white-space: nowrap;
         }
+        ul {
+          list-style-type: none;
+          padding-left: 0.5em;
+          margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -297,17 +302,15 @@
     <script>
         Chart.register(ChartDeferred);
         const systemNotes = {
-            "RPi5B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#252525><tr><td>" +
-                                "<ul><li><b>RPi5B_R310_64</b><ul>" +
+            "RPi5B_R310_64": "<br><ul><li><b>RPi5B_R310_64</b><ul>" +
                                 "<li>Raspberry Pi 5B <small>(64‑bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li>" +
                                 "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
                                 "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
-                                "</li></ul></td></tr></table></font></p>",
-            "RPi4B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#252525><tr><td>" +
-                                "<ul><li><b>RPi4B_R310_64</b><ul>" +
+                                "</li></ul><br>",
+            "RPi4B_R310_64": "<br><ul><li><b>RPi4B_R310_64</b><ul>" +
                                 "<li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
                                 "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
-                                "</li></ul></td></tr></table></font></p>",
+                                "</li></ul><br>",
         };
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
@@ -767,10 +770,13 @@
                 const selectedSystems = systemSelect.getValue(true);
                 notesContainer.innerHTML = '';
                 selectedSystems.forEach(system => {
-                    const noteElement = document.createElement('div');
-                    noteElement.classList.add('system-note');
-                    noteElement.innerHTML = `${systemNotes[system] || ''}`;
-                    notesContainer.appendChild(noteElement);
+                    if (systemNotes[system]) {
+                        const noteElement = document.createElement('div');
+                        noteElement.classList.add('system-note');
+                        const colorDot = `<br><span class="color-dot" style="background-color: ${getColorForSystem(system)}"></span>`;
+                        noteElement.innerHTML = `<p><table border=1 margin=0 width=100% bgcolor=#222><tr><td><font size=-1><table margin=4 border=0 width=100% bgcolor=#252525><tr><td width=10% style='text-align: right; vertical-align: top'>${colorDot}</td><td width=90% style='text-align: left; vertical-align: top'>${systemNotes[system]}</td></tr></table></font></td></tr></table></p>`;
+                        notesContainer.appendChild(noteElement);
+                    }
                 });
                 maybeHideInstructions();
             });
