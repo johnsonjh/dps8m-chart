@@ -79,6 +79,7 @@
         }
         label {
             color: #ffffff;
+            white-space: nowrap;
         }
         input[type="radio"]:checked {
             background-color: #4b5563;
@@ -118,7 +119,11 @@
             height: 100% !important;
         }
         .scale-toggle {
-            margin-bottom: 16px;
+            margin-bottom: 24px;
+            white-space: nowrap;
+            display: inline-flex;
+            vertical-align: bottom;
+            gap: 3px;
         }
         .chartjs-render-monitor{
             height: 600px !important;
@@ -143,7 +148,7 @@
         .sortable-th:after {
             content: '';
             font-size: 0.5em;
-            vertical-align: middle;
+            vertical-align: bottom;
             display: inline;
             margin-left: 0px;
             padding-left: 10px;
@@ -253,17 +258,17 @@
         </div>
         <table border=0 cellpadding=0>
             <tr>
-                <td>
+                <td style="vertical-align: top;">
+                    <label>Scale Type:</label>
                     <div class="scale-toggle">
-                        <label>Scale Type:</label>
-                        <input type="radio" name="scale" value="linear" checked>&nbsp;<small>Linear</small>&nbsp;
-                        <input type="radio" name="scale" value="logarithmic">&nbsp;<small>Logarithmic</small>&nbsp;
+                        <input type="radio" name="scale" value="linear" checked><small>Linear&nbsp;</small>
+                        <input type="radio" name="scale" value="logarithmic"><small>Logarithmic</small>
                     </div>
                 </td>
-                <td>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td style="vertical-align: top;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
-                <td>
+                <td style="vertical-align: top;">
                     <label>Chart Sorting:</label>
                     <button id="sortChartsBtn" class="sort-btn" type="button">Disabled</button>
                 </td>
