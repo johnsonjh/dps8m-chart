@@ -297,13 +297,13 @@
     <script>
         Chart.register(ChartDeferred);
         const systemNotes = {
-            "RPi5B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#1f2935><tr><td>" +
+            "RPi5B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#252525><tr><td>" +
                                 "<ul><li><b>RPi5B_R310_64</b><ul>" +
                                 "<li>Raspberry Pi 5B <small>(64‑bit BCM2712, 2500MHz, ARM Cortex A75, 8GB RAM)</small></li>" +
                                 "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
                                 "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
                                 "</li></ul></td></tr></table></font></p>",
-            "RPi4B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#1f2935><tr><td>" +
+            "RPi4B_R310_64": "<p><font size=-1><table margin=4 border=1 width=100% bgcolor=#252525><tr><td>" +
                                 "<ul><li><b>RPi4B_R310_64</b><ul>" +
                                 "<li>Raspberry Pi 4B</li><li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
                                 "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
@@ -740,7 +740,10 @@
         let tableSortMIPS = { col: null, asc: true };
         let tableSortOther = { col: null, asc: true };
         const MIPS_benchmarks = [
-            "nqueensx","CGMIPS","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12","T13","T14","T15"
+            "nqueensx", "CGMIPS",
+            "T1",  "T2",  "T3",  "T4",  "T5",
+            "T6",  "T7",  "T8",  "T9",  "T10",
+            "T11", "T12", "T13", "T14", "T15"
         ];
         document.addEventListener('DOMContentLoaded', function() {
             const systemSelectElement = document.getElementById('systemSelect');
@@ -804,11 +807,22 @@
                 charts.forEach(chart => chart.destroy());
                 charts = [];
                 Object.entries(unitGroups).forEach(([unit, benchmarksInUnit]) => {
+                    const table = document.createElement('table');
+                    table.setAttribute('margin', '4');
+                    table.setAttribute('border', '1');
+                    table.setAttribute('width', '100%');
+                    table.setAttribute('bgcolor', '#252525');
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
                     const wrapper = document.createElement('div');
                     wrapper.className = 'chart-wrapper';
                     const canvas = document.createElement('canvas');
                     wrapper.appendChild(canvas);
-                    document.getElementById('chartsContainer').appendChild(wrapper);
+                    td.appendChild(wrapper);
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                    document.getElementById('chartsContainer').appendChild(document.createElement('p'));
+                    document.getElementById('chartsContainer').appendChild(table);
                     const ctx = canvas.getContext('2d');
                     let systemsForChart = selectedSystems.slice();
                     if (sortLowestToHighest) {
@@ -858,12 +872,17 @@
                                     type: scaleType,
                                     beginAtZero: true,
                                     title: { display: true, text: `Performance (${unit})` },
-                                    ticks: { color: '#ffffff' }
+                                    ticks: { color: '#ffffff' },
+                                    grid: { color: '#cccccc' }
                                 },
-                                x: { title: { display: false, text: 'Benchmarks' }, ticks: { color: '#ffffff' } }
+                                x: {
+                                    title: { display: false, text: 'Benchmarks' },
+                                    ticks: { color: '#ffffff' },
+                                    grid: { color: '#cccccc' }
+                                }
                             },
                             plugins: {
-                                legend: { position: 'top', labels: { font: { size: 9 }, color: '#ffffff' } },
+                                legend: { position: 'top', labels: { font: { size: 11 }, color: '#ffffff' } },
                                 title: { display: true, text: `Benchmark — ${unit}`, color: '#ffffff' },
                                 tooltip: {
                                     callbacks: {
