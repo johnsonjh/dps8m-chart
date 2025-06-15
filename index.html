@@ -320,13 +320,13 @@
         };
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
-            { name: 'nqueensx', unit: 'nqueensx MIPS', description: 'Millions of Instructions Per Second' },
-            { name: 'Pfannkuchen',  unit: 'Pfannkuchen IPS',  description: 'Iterations Per Second' },
-            { name: 'Eratosthenes', unit: 'Eratosthenes IPS', description: 'Iterations Per Second' },
-            { name: 'Serestone',    unit: 'Serestone IPS',    description: 'Iterations Per Second' },
-            { name: 'Romberg',      unit: 'Romberg IPS',      description: 'Iterations Per Second' },
-            { name: 'Trapezoid',    unit: 'Trapezoid IPS',    description: 'Iterations Per Second' },
-            { name: 'Mirestone',    unit: 'Mirestone IPS',    description: 'Iterations Per Second' },
+            { name: 'nqueensx', unit: 'nqueensx MIPS', description: 'Millions of instructions per second' },
+            { name: 'Pfannkuchen',  unit: 'Pfannkuchen IPS',  description: 'Iterations per second' },
+            { name: 'Eratosthenes', unit: 'Eratosthenes IPS', description: 'Iterations per second' },
+            { name: 'Serestone',    unit: 'Serestone IPS',    description: 'Iterations per second' },
+            { name: 'Romberg',      unit: 'Romberg IPS',      description: 'Iterations per second' },
+            { name: 'Trapezoid',    unit: 'Trapezoid IPS',    description: 'Iterations per second' },
+            { name: 'Mirestone',    unit: 'Mirestone IPS',    description: 'Iterations per second' },
             { name: 'PI',           unit: 'PI calculation seconds',  description: 'Time to complete (in seconds)' },
             { name: 'SR2',          unit: 'SR2 digits calculated', description: 'Digits calculated (in 10 minutes)' },
             { name: 'CGMIPS', unit: 'instr_speed MIPS', description: 'instr_speed — Composite Geometric MIPS'},
@@ -346,6 +346,19 @@
             { name: 'T14',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 14: nop 0,du… (MIPS)' },
             { name: 'T15',    unit: 'instr_speed MIPS', description: 'instr_speed — TEST 15: lprpbp/sprpbp ‑ even/odd bit29 (MIPS)' },
         ];
+        const unitSubtitles = {
+            'seconds to build MCS':   '↓ Less is better (elapsed seconds) ↓',
+            'nqueensx MIPS':          '↑ More is better (millions of instructions per second) ↑',
+            'Pfannkuchen IPS':        '↑ More is better (iterations per second) ↑',
+            'Eratosthenes IPS':       '↑ More is better (iterations per second) ↑',
+            'Serestone IPS':          '↑ More is better (iterations per second) ↑',
+            'Romberg IPS':            '↑ More is better (iterations per second) ↑',
+            'Trapezoid IPS':          '↑ More is better (iterations per second) ↑',
+            'Mirestone IPS':          '↑ More is better (iterations per second) ↑',
+            'PI calculation seconds': '↓ Less is better (elapsed seconds) ↓',
+            'SR2 digits calculated':  '↑ More is better (digits calculated in ten minutes) ↑',
+            'instr_speed MIPS':       '↑ More is better (millions of instructions per second) ↑',
+        };
         const benchmarkData = {
             RPi5B_R310_64: {
                 nqueensx: 10.84,
@@ -896,6 +909,12 @@
                             plugins: {
                                 legend: { position: 'top', labels: { font: { size: 11 }, color: '#ffffff' } },
                                 title: { display: true, text: `Benchmark — ${unit}`, color: '#ffffff' },
+                                subtitle: {
+                                    display: !!unitSubtitles[unit],
+                                    text: unitSubtitles[unit] || '',
+                                    color: '#cccccc',
+                                    font: { size: 12, weight: 'normal', style: 'italic' }
+                                },
                                 tooltip: {
                                     callbacks: {
                                         title: function(context) {
