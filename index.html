@@ -213,7 +213,7 @@
     <div class="container">
         <div class="select-container">
             <label for="systemSelect">&nbsp;Select Systems:</label>
-            <select id="systemSelect" multiple>
+            <select id="systemSelect" multiple> <!-- XXX: Add new system names below -->
                 <optgroup label="DPS8M R3.1.0 [64‑bit]">
                     <option value="RPi5B_R310_64">Raspberry Pi 5B / Linux / Clang / PGO</option>
                     <option value="RPi4B_R310_64">Raspberry Pi 4B / Linux / Clang / PGO</option>
@@ -316,7 +316,7 @@
                                "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
                                "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
                              "</ul></li></ul><br>",
-        };
+        }; // XXX: Add new notes above
         const benchmarks = [
             { name: 'MCS', unit: 'seconds to build MCS', description: 'Time to build MCS (in seconds)' },
             { name: 'nqueensx', unit: 'nqueensx MIPS', description: 'Millions of instructions per second' },
@@ -751,7 +751,7 @@
                 PI: 636.42,
                 SR2: 1151,
             },
-        };
+        }; // XXX: Add new benchmark data above
         function getColorForSystem(systemName) {
             const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
             const g = 0.618033988749895;
