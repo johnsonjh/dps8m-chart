@@ -188,20 +188,26 @@
             background: #2d3748;
         }
        .color-dot {
-          display: inline-block;
-          width: 1em;
-          height: 1em;
-          border-radius: 50%;
-          margin-right: 0.5em;
-          vertical-align: middle;
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            border-radius: 50%;
+            margin-right: 0.5em;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .note-dot {
+            width: 2em;
+            height: 2em;
+            margin-left: 1em;
         }
         .system-label {
-          white-space: nowrap;
+            white-space: nowrap;
         }
         ul {
-          list-style-type: none;
-          padding-left: 0.5em;
-          margin: 0;
+            list-style-type: none;
+            padding-left: 0.5em;
+            margin: 0;
         }
     </style>
 </head>
@@ -773,7 +779,7 @@
                     if (systemNotes[system]) {
                         const noteElement = document.createElement('div');
                         noteElement.classList.add('system-note');
-                        const colorDot = `<br><span class="color-dot" style="background-color: ${getColorForSystem(system)}"></span>`;
+                        const colorDot = `<br><p><span class="color-dot note-dot" style="background-color: ${getColorForSystem(system)}"></span></p>`;
                         noteElement.innerHTML = `<p><table border=1 margin=0 width=100% bgcolor=#222><tr><td><font size=-1><table margin=4 border=0 width=100% bgcolor=#252525><tr><td width=10% style='text-align: right; vertical-align: top'>${colorDot}</td><td width=90% style='text-align: left; vertical-align: top'>${systemNotes[system]}</td></tr></table></font></td></tr></table></p>`;
                         notesContainer.appendChild(noteElement);
                     }
