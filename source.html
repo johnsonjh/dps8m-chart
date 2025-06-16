@@ -1,92 +1,113 @@
 <!doctype html>
+
 <!-- Copyright (c) 2025 Jeffrey H. Johnson -->
 <!-- SPDX-License-Identifier: MIT -->
 <!-- vim: set expandtab ft=javascript: -->
+
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DPS8M Benchmark Visualizer</title>
+
         <!-- "https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js" -->
         <script src="chart.umd.min.js"></script>
+
         <!-- "https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/styles/choices.min.css" -->
         <link rel="stylesheet" href="choices.min.css" />
+
         <!-- "https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/scripts/choices.min.js" -->
         <script src="choices.min.js"></script>
+
         <!-- "https://cdn.jsdelivr.net/npm/chartjs-plugin-deferred@2.0.0/dist/chartjs-plugin-deferred.min.js" -->
         <script src="chartjs-plugin-deferred.min.js"></script>
-        <title>DPS8M Benchmark Visualizer</title>
         <style>
             .choices {
                 background-color: #000000;
                 color: #ffffff;
                 border: 1px solid #4b5563;
             }
+
             .choices__inner {
                 background-color: #000000;
                 color: #ffffff;
                 border: 1px solid #4b5563;
                 border-radius: 0 !important;
             }
+
             .choices__input {
                 background-color: #000000;
                 color: #ffffff;
             }
+
             .choices__list--dropdown {
                 background-color: #1f2935;
                 color: #ffffff;
                 border: 1px solid #4b5563;
                 border-radius: 0 !important;
             }
+
             .choices__list--dropdown .choices__item,
             .choices__list--dropdown .choices__item--selectable {
                 color: #ffffff !important;
             }
+
             .choices__list--dropdown .choices__item--selectable.is-highlighted {
                 background-color: #000000;
                 color: #ffffff !important;
             }
+
             .choices__item {
                 background-color: #1f2935;
                 color: #ffffff;
             }
+
             .choices__list--multiple .choices__item {
                 border-radius: 0 !important;
                 background-color: #4b5563;
                 color: #ffffff;
             }
+
             .choices__item--selectable:hover {
                 background-color: #4b5563;
                 color: #ffffff;
                 border-radius: 0 !important;
             }
+
             .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
                 background-color: #000000;
             }
+
             .choices__item--choice.is-selected,
             .choices__item--choice.is-highlighted {
                 background-color: #4b5563;
                 color: #ffffff;
                 border-radius: 0 !important;
             }
+
             .choices__button {
                 background-color: #4b5563;
                 color: #ffffff;
                 border: none;
                 border-radius: 0 !important;
             }
+
             input[type="radio"] {
                 background-color: #374151;
                 border: 1px solid #4b5563;
             }
+
             input[type="radio"]:checked {
                 background-color: #4b5563;
                 border-color: #ffffff;
             }
+
             body {
                 background-color: #323232;
                 padding: 10px;
                 font-family: sans-serif;
             }
+
             .container {
                 max-width: 94%;
                 margin: 0 auto;
@@ -96,9 +117,11 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
+
             .select-container {
                 margin-bottom: 16px;
             }
+
             label {
                 display: block;
                 font-size: 14px;
@@ -106,16 +129,19 @@
                 white-space: nowrap;
                 margin-bottom: 4px;
             }
+
             .chart-wrapper {
                 width: 100%;
                 height: 100%;
                 margin-bottom: 20px;
                 position: relative;
             }
+
             canvas {
                 width: 100% !important;
                 height: 100% !important;
             }
+
             .scale-toggle {
                 margin-bottom: 24px;
                 white-space: nowrap;
@@ -123,9 +149,11 @@
                 vertical-align: bottom;
                 gap: 3px;
             }
+
             .chartjs-render-monitor {
                 height: 600px !important;
             }
+
             .sort-btn {
                 background: #1f2935;
                 color: #fff;
@@ -135,14 +163,17 @@
                 margin-bottom: 16px;
                 cursor: pointer;
             }
+
             .sort-btn:hover {
                 background: #374151;
             }
+
             .sortable-th {
                 cursor: pointer;
                 position: relative;
                 white-space: nowrap;
             }
+
             .sortable-th:after {
                 content: "";
                 font-size: 0.5em;
@@ -151,6 +182,7 @@
                 margin-left: 0px;
                 padding-left: 10px;
             }
+
             .sortable-th.sorted-asc:after {
                 content: "▲";
                 font-size: 0.55em;
@@ -159,6 +191,7 @@
                 margin-left: 1px;
                 padding-left: 0px;
             }
+
             .sortable-th.sorted-desc:after {
                 content: "▼";
                 font-size: 0.55em;
@@ -167,12 +200,14 @@
                 margin-left: 1px;
                 padding-left: 0px;
             }
+
             .dynamicTable {
                 border-collapse: collapse;
                 width: 100%;
                 margin-top: 24px;
                 background: #222;
             }
+
             .dynamicTable th,
             .dynamicTable td {
                 border: 1px solid #4b5563;
@@ -180,12 +215,15 @@
                 color: #fff;
                 text-align: center;
             }
+
             .dynamicTable th {
                 background: #1f2935;
             }
+
             .dynamicTable tr:hover td {
                 background: #2d3748;
             }
+
             .color-dot {
                 display: inline-block;
                 width: 1em;
@@ -195,19 +233,23 @@
                 vertical-align: middle;
                 white-space: nowrap;
             }
+
             .note-dot {
                 width: 2em;
                 height: 2em;
                 margin-left: 1em;
             }
+
             .system-label {
                 white-space: nowrap;
             }
+
             ul {
                 list-style-type: none;
                 padding-left: 0.38em;
                 margin: 0;
             }
+
             html,
             body {
                 height: 100%;
@@ -215,17 +257,21 @@
                 padding: 0;
                 box-sizing: border-box;
             }
+
             body {
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
             }
+
             main {
                 flex: 1 0 auto;
             }
+
             footer a {
                 color: #4f4f4f;
             }
+
             footer {
                 flex-shrink: 0;
                 background: #222;
@@ -263,6 +309,7 @@
                         </optgroup>
                     </select>
                 </div>
+
                 <div class="select-container">
                     <label for="benchmarkSelect">&nbsp;Select Benchmarks:</label>
                     <select id="benchmarkSelect" multiple>
@@ -294,6 +341,7 @@
                         <option value="T15">instr_speed — TEST 15: lprpbp/sprpbp ‑ even/odd bit29</option>
                     </select>
                 </div>
+
                 <table border="0" cellpadding="0">
                     <tr>
                         <td style="vertical-align: top">
@@ -307,11 +355,13 @@
                         </td>
                     </tr>
                 </table>
+
                 <hr />
                 <div id="tableContainer"></div>
                 <br />
                 <div id="chartsContainer"></div>
                 <div id="notesContainer"></div>
+
                 <div id="instructions" style="margin-bottom: 12px; color: #ffd; background: #222; padding: 8px; border-radius: 4px">
                     <table border="0" cellpadding="3" width="100%">
                         <tr>
@@ -329,20 +379,23 @@
             </div>
             <script>
                 Chart.register(ChartDeferred);
+
                 const systemNotes = {
                     RPi5B_R310_64:
                         "<br><ul><li><b>RPi5B_R310_64</b><ul>" +
                         "<li>Raspberry Pi 5B <small>(ARMv8-A BCM2711, Arm Cortex A72, 1800MHz)</small></li>" +
                         "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
-                        "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                        "<li>Multics MR12.8 + 64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
                         "</ul></li></ul><br>",
+
                     RPi4B_R310_64:
                         "<br><ul><li><b>RPi4B_R310_64</b><ul>" +
                         "<li>Raspberry Pi 4B <small>(ARMv8-A BCM2712, Arm Cortex A76, 2400MHz)</small></li>" +
                         "<li>DPS8M R3.1.0 <small>(Clang 20, PGO)</small>, 64‑bit</li>" +
-                        "<li>64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
+                        "<li>Multics MR12.8 + 64‑bit Linux: Raspberry Pi OS 12 <small>(Bookworm)</small></li>" +
                         "</ul></li></ul><br>",
                 }; // XXX: Add new notes above
+
                 const benchmarks = [
                     {name: "MCS", unit: "seconds to build MCS", description: "Time to build MCS (in seconds)"},
                     {name: "nqueensx", unit: "nqueensx MIPS", description: "Millions of instructions per second"},
@@ -371,6 +424,7 @@
                     {name: "T14", unit: "instr_speed MIPS", description: "instr_speed — TEST 14: nop 0,du… (MIPS)"},
                     {name: "T15", unit: "instr_speed MIPS", description: "instr_speed — TEST 15: lprpbp/sprpbp ‑ even/odd bit29 (MIPS)"},
                 ];
+
                 const unitSubtitles = {
                     "seconds to build MCS": "↓ Less is better (elapsed seconds) ↓",
                     "nqueensx MIPS": "↑ More is better (millions of instructions per second) ↑",
@@ -384,6 +438,7 @@
                     "SR2 digits calculated": "↑ More is better (digits calculated in ten minutes) ↑",
                     "instr_speed MIPS": "↑ More is better (millions of instructions per second) ↑",
                 };
+
                 const benchmarkData = {
                     RPi5B_R310_64: {
                         nqueensx: 10.84,
@@ -413,6 +468,7 @@
                         PI: 521.41,
                         SR2: 1325,
                     },
+
                     RPi4B_R310_64: {
                         nqueensx: 4.26,
                         CGMIPS: 4.21,
@@ -441,6 +497,7 @@
                         PI: 1369.78,
                         SR2: 509,
                     },
+
                     RPi3B_R310_64: {
                         nqueensx: 1.56,
                         CGMIPS: 1.56,
@@ -469,6 +526,7 @@
                         PI: 3626.1,
                         SR2: 193,
                     },
+
                     RPi3B_R310_32: {
                         nqueensx: 1.0,
                         CGMIPS: 0.98,
@@ -497,6 +555,7 @@
                         PI: 5925.9,
                         SR2: 116,
                     },
+
                     AR750S_R310_32: {
                         nqueensx: 0.63,
                         CGMIPS: 0.65,
@@ -525,6 +584,7 @@
                         PI: 10653.01,
                         SR2: 67,
                     },
+
                     APU2_R310_64: {
                         nqueensx: 1.97,
                         CGMIPS: 1.98,
@@ -553,6 +613,7 @@
                         PI: 3103.82,
                         SR2: 232,
                     },
+
                     CN2840_R310_64: {
                         nqueensx: 3.97,
                         CGMIPS: 4.57,
@@ -581,6 +642,7 @@
                         PI: 1411.17,
                         SR2: 510,
                     },
+
                     C4205U_R310_64: {
                         nqueensx: 6.13,
                         CGMIPS: 6.1,
@@ -609,6 +671,7 @@
                         PI: 946.28,
                         SR2: 728,
                     },
+
                     C2405S_R310_64: {
                         nqueensx: 9.38,
                         CGMIPS: 9.83,
@@ -637,6 +700,7 @@
                         PI: 610.69,
                         SR2: 1180,
                     },
+
                     i3_8130U_R310_64: {
                         nqueensx: 11.55,
                         CGMIPS: 11.51,
@@ -665,6 +729,7 @@
                         PI: 555.27,
                         SR2: 1232,
                     },
+
                     i7_8700_R310_64: {
                         nqueensx: 14.1,
                         CGMIPS: 14.23,
@@ -693,6 +758,7 @@
                         PI: 417.25,
                         SR2: 1701,
                     },
+
                     GHM_R310_64: {
                         nqueensx: 12.3,
                         CGMIPS: 11.83,
@@ -721,6 +787,7 @@
                         PI: 554.61,
                         SR2: 1170,
                     },
+
                     X2_240E_R310_64: {
                         nqueensx: 6.92,
                         CGMIPS: 7.32,
@@ -749,6 +816,7 @@
                         PI: 851.9,
                         SR2: 838,
                     },
+
                     Thinkpad_R310_64: {
                         nqueensx: 9.63,
                         CGMIPS: 9.98,
@@ -778,36 +846,48 @@
                         SR2: 1151,
                     },
                 }; // XXX: Add new benchmark data above
+
                 function getColorForSystem(systemName) {
                     const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
                     const g = 0.618033988749895;
                     const h = (hash * g) % 1;
                     return `hsl(${Math.round(h * 360)}, 50%, 50%)`;
                 }
+
                 let tableSortMIPS = {col: null, asc: true};
                 let tableSortOther = {col: null, asc: true};
+
                 const MIPS_benchmarks = ["nqueensx", "CGMIPS", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "T13", "T14", "T15"];
+
                 document.addEventListener("DOMContentLoaded", function () {
                     const systemSelectElement = document.getElementById("systemSelect");
                     const instructionsDiv = document.getElementById("instructions");
+
                     function maybeHideInstructions() {
                         if (systemSelectElement.selectedOptions && systemSelectElement.selectedOptions.length > 0) {
                             instructionsDiv.style.display = "none";
                         }
                     }
+
                     systemSelectElement.addEventListener("change", maybeHideInstructions);
                     maybeHideInstructions();
+
                     const benchmarkSelectElement = document.getElementById("benchmarkSelect");
+
                     if (!systemSelectElement || !benchmarkSelectElement) {
                         console.error("Select elements not found");
                         return;
                     }
+
                     const systemSelect = new Choices(systemSelectElement, {searchResultLimit: -1, removeItemButton: true});
                     const benchmarkSelect = new Choices(benchmarkSelectElement, {searchResultLimit: -1, removeItemButton: true});
+
                     const notesContainer = document.getElementById("notesContainer");
+
                     systemSelect.passedElement.element.addEventListener("change", function () {
                         const selectedSystems = systemSelect.getValue(true);
                         notesContainer.innerHTML = "";
+
                         selectedSystems.forEach((system) => {
                             if (systemNotes[system]) {
                                 const noteElement = document.createElement("div");
@@ -817,12 +897,17 @@
                                 notesContainer.appendChild(noteElement);
                             }
                         });
+
                         maybeHideInstructions();
                     });
+
                     benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
+
                     let charts = [];
+
                     let sortLowestToHighest = false;
                     const sortBtn = document.getElementById("sortChartsBtn");
+
                     if (sortBtn) {
                         sortBtn.addEventListener("click", function () {
                             sortLowestToHighest = !sortLowestToHighest;
@@ -830,16 +915,20 @@
                             updateChart();
                         });
                     }
+
                     function updateChart() {
                         const selectedSystems = systemSelect.getValue(true);
                         const selectedBenchmarks = benchmarkSelect.getValue(true);
+
                         if (selectedSystems.length === 0 || selectedBenchmarks.length === 0) {
                             document.getElementById("chartsContainer").innerHTML = "";
                             charts = [];
                             updateTable();
                             return;
                         }
+
                         const unitGroups = {};
+
                         selectedBenchmarks.forEach((benchmark) => {
                             const unit = benchmarks.find((b) => b.name === benchmark).unit;
                             if (!unitGroups[unit]) {
@@ -847,29 +936,38 @@
                             }
                             unitGroups[unit].push(benchmark);
                         });
+
                         const scaleType = document.querySelector('input[name="scale"]:checked').value;
+
                         document.getElementById("chartsContainer").innerHTML = "";
                         charts.forEach((chart) => chart.destroy());
                         charts = [];
+
                         Object.entries(unitGroups).forEach(([unit, benchmarksInUnit]) => {
                             const table = document.createElement("table");
                             table.setAttribute("margin", "4");
                             table.setAttribute("border", "1");
                             table.setAttribute("width", "100%");
                             table.setAttribute("bgcolor", "#252525");
+
                             const tr = document.createElement("tr");
                             const td = document.createElement("td");
+
                             const wrapper = document.createElement("div");
                             wrapper.className = "chart-wrapper";
+
                             const canvas = document.createElement("canvas");
                             wrapper.appendChild(canvas);
                             td.appendChild(wrapper);
                             tr.appendChild(td);
                             table.appendChild(tr);
+
                             document.getElementById("chartsContainer").appendChild(document.createElement("p"));
                             document.getElementById("chartsContainer").appendChild(table);
+
                             const ctx = canvas.getContext("2d");
                             let systemsForChart = selectedSystems.slice();
+
                             if (sortLowestToHighest) {
                                 if (benchmarksInUnit.length === 1) {
                                     const bench = benchmarksInUnit[0];
@@ -888,6 +986,7 @@
                                     });
                                 }
                             }
+
                             const datasets = systemsForChart.map((system) => ({
                                 label: system,
                                 data: benchmarksInUnit.map((benchmark) => {
@@ -898,6 +997,7 @@
                                 borderColor: getColorForSystem(system).replace("50%", "70%"),
                                 borderWidth: 1,
                             }));
+
                             const chart = new Chart(ctx, {
                                 type: "bar",
                                 data: {
@@ -960,17 +1060,22 @@
                         });
                         updateTable();
                     }
+
                     function renderDynamicTable(selectedSystems, selectedBenchmarks) {
                         const tableContainer = document.getElementById("tableContainer");
+
                         if (!selectedSystems.length || !selectedBenchmarks.length) {
                             tableContainer.innerHTML = "";
                             return;
                         }
+
                         const selectedT = selectedBenchmarks.filter((b) => MIPS_benchmarks.includes(b));
                         const selectedOther = selectedBenchmarks.filter((b) => !MIPS_benchmarks.includes(b));
                         let html = "";
+
                         function buildTable(systems, benches, tableId, sortState) {
                             if (!benches.length) return "";
+
                             let html = `<table id="${tableId}" class="dynamicTable">`;
                             html += "<thead><tr>";
                             html += `<th class="sortable-th${sortState.col === 0 ? " sorted-" + (sortState.asc ? "asc" : "desc") : ""}" data-col="0"><b>System</b></th>`;
@@ -978,6 +1083,7 @@
                                 html += `<th class="sortable-th${sortState.col === i + 1 ? " sorted-" + (sortState.asc ? "asc" : "desc") : ""}" data-col="${i + 1}"><b>${bench}</b></th>`;
                             });
                             html += "</tr></thead>";
+
                             let rows = systems.map((sys) => {
                                 return [
                                     `<span class="system-label"><span class="color-dot" style="background-color: ${getColorForSystem(sys)}"></span>${sys}</span>`,
@@ -991,15 +1097,18 @@
                                     }),
                                 ];
                             });
+
                             if (sortState.col !== null) {
                                 rows.sort((a, b) => {
                                     let va = a[sortState.col],
                                         vb = b[sortState.col];
+
                                     if (sortState.col === 0) {
                                         va = va.replace(/<[^>]*>/g, "");
                                         vb = vb.replace(/<[^>]*>/g, "");
                                         return sortState.asc ? va.localeCompare(vb) : vb.localeCompare(va);
                                     }
+
                                     if (!isNaN(va) && !isNaN(vb) && va !== "" && vb !== "") {
                                         va = parseFloat(va);
                                         vb = parseFloat(vb);
@@ -1009,6 +1118,7 @@
                                     }
                                 });
                             }
+
                             html += "<tbody>";
                             rows.forEach((row) => {
                                 html += "<tr>" + row.map((cell) => `<td><code>${cell}</code></td>`).join("") + "</tr>";
@@ -1016,14 +1126,17 @@
                             html += "</tbody></table>";
                             return html;
                         }
+
                         if (selectedT.length) {
                             html += `<p><div><font size=-1>MIPS Benchmarks:</font></div></p>`;
                             html += buildTable(selectedSystems, selectedT, "dynamicTableT", tableSortMIPS);
                         }
+
                         if (selectedOther.length) {
                             html += `<p><div style="margin-top:1.5eml"><font size=-1>Other Benchmarks:</font></div></p>`;
                             html += buildTable(selectedSystems, selectedOther, "dynamicTableOther", tableSortOther);
                         }
+
                         tableContainer.innerHTML = html;
                         document.querySelectorAll("#dynamicTableT th.sortable-th").forEach((th) => {
                             th.onclick = function () {
@@ -1036,6 +1149,7 @@
                                 renderDynamicTable(selectedSystems, selectedBenchmarks);
                             };
                         });
+
                         document.querySelectorAll("#dynamicTableOther th.sortable-th").forEach((th) => {
                             th.onclick = function () {
                                 let col = parseInt(this.getAttribute("data-col"), 10);
@@ -1048,13 +1162,16 @@
                             };
                         });
                     }
+
                     function updateTable() {
                         const selectedSystems = systemSelect.getValue(true);
                         const selectedBenchmarks = benchmarkSelect.getValue(true);
                         renderDynamicTable(selectedSystems, selectedBenchmarks);
                     }
+
                     systemSelectElement.addEventListener("change", updateChart);
                     benchmarkSelectElement.addEventListener("change", updateChart);
+
                     document.querySelectorAll('input[name="scale"]').forEach((radio) => {
                         radio.addEventListener("change", updateChart);
                     });
@@ -1062,6 +1179,7 @@
                 });
             </script>
         </main>
+
         <footer>
             <table border="0" width="100%">
                 <tr>
@@ -1069,7 +1187,7 @@
                         <span>&nbsp;&nbsp;Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                     </td>
                     <td style="vertical-align: middle; text-align: right; white-space: nowrap">
-                        <small>Version <code>2025.6.15.4</code></small>
+                        <small>Version <code>2025.6.16.0</code></small>
                         &nbsp;&nbsp;&nbsp;
                     </td>
                 </tr>
