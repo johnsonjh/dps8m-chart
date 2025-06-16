@@ -1069,7 +1069,7 @@
                             return;
                         }
 
-                        const selectedT = selectedBenchmarks.filter((b) => MIPS_benchmarks.includes(b));
+                        const selectedMIPS = selectedBenchmarks.filter((b) => MIPS_benchmarks.includes(b));
                         const selectedOther = selectedBenchmarks.filter((b) => !MIPS_benchmarks.includes(b));
                         let html = "";
 
@@ -1127,9 +1127,9 @@
                             return html;
                         }
 
-                        if (selectedT.length) {
+                        if (selectedMIPS.length) {
                             html += `<p><div><font size=-1>MIPS Benchmarks:</font></div></p>`;
-                            html += buildTable(selectedSystems, selectedT, "dynamicTableT", tableSortMIPS);
+                            html += buildTable(selectedSystems, selectedMIPS, "dynamicTableMIPS", tableSortMIPS);
                         }
 
                         if (selectedOther.length) {
@@ -1138,7 +1138,7 @@
                         }
 
                         tableContainer.innerHTML = html;
-                        document.querySelectorAll("#dynamicTableT th.sortable-th").forEach((th) => {
+                        document.querySelectorAll("#dynamicTableMIPS th.sortable-th").forEach((th) => {
                             th.onclick = function () {
                                 let col = parseInt(this.getAttribute("data-col"), 10);
                                 if (tableSortMIPS.col === col) tableSortMIPS.asc = !tableSortMIPS.asc;
