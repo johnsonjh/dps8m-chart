@@ -8,6 +8,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
         <title>DPS8M Benchmark Visualizer</title>
 
         <!-- "https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js" -->
@@ -21,6 +22,7 @@
 
         <!-- "https://cdn.jsdelivr.net/npm/chartjs-plugin-deferred@2.0.0/dist/chartjs-plugin-deferred.min.js" -->
         <script src="chartjs-plugin-deferred.min.js"></script>
+
         <style>
             .choices {
                 background-color: #000000;
@@ -280,6 +282,11 @@
                 border-top: 10px solid #323232;
                 font-size: 0.6em;
             }
+
+            .number-input {
+                background-color: #4b5563;
+                color: #ffffff;
+            }
         </style>
     </head>
     <body>
@@ -289,6 +296,11 @@
                     <label for="systemSelect">&nbsp;Select Systems:</label>
                     <select id="systemSelect" multiple>
                         <!-- XXX: Add new system names below -->
+
+                        <optgroup label="Custom">
+                            <option value="YourSystem">Your System (custom)</option>
+                        </optgroup>
+
                         <optgroup label="DPS8M R3.1.0 [64‑bit]">
                             <option value="RPi5B_R310_64">Raspberry Pi 5B / Linux / Clang / PGO</option>
                             <option value="RPi4B_R310_64">Raspberry Pi 4B / Linux / Clang / PGO</option>
@@ -303,6 +315,7 @@
                             <option value="X2_240E_R310_64">X2‑240e / Linux / GCC / PGO</option>
                             <option value="Thinkpad_R310_64">Thinkpad / Linux (KVM) / GCC / PGO</option>
                         </optgroup>
+
                         <optgroup label="DPS8M R3.1.0 [32‑bit]">
                             <option value="RPi3B_R310_32">Raspberry Pi 3B / Linux / GCC 14.3 / PGO</option>
                             <option value="AR750S_R310_32">AR750S / Linux / GCC / PGO, NO_LOCKLESS</option>
@@ -314,7 +327,9 @@
                     <label for="benchmarkSelect">&nbsp;Select Benchmarks:</label>
                     <select id="benchmarkSelect" multiple>
                         <option value="MCS">MCS</option>
+
                         <option value="nqueensx">nqueensx</option>
+
                         <option value="PI">mbench — PI</option>
                         <option value="SR2">mbench — SR2</option>
                         <option value="Pfannkuchen">mbench — Pfannkuchen</option>
@@ -323,6 +338,7 @@
                         <option value="Romberg">mbench — Romberg</option>
                         <option value="Trapezoid">mbench — Trapezoid</option>
                         <option value="Mirestone">mbench — Mirestone</option>
+
                         <option value="CGMIPS">instr_speed — Composite Geometric MIPS</option>
                         <option value="T1">instr_speed — TEST 1: lda/sta ‑ even/odd</option>
                         <option value="T2">instr_speed — TEST 2: lda/sta ‑ odd/even</option>
@@ -355,13 +371,12 @@
                         </td>
                     </tr>
                 </table>
-
+                <div id="yourSystemFormContainer" style="display: none; margin-top: 16px"></div>
                 <hr />
                 <div id="tableContainer"></div>
                 <br />
                 <div id="chartsContainer"></div>
                 <div id="notesContainer"></div>
-
                 <div id="instructions" style="margin-bottom: 12px; color: #ffd; background: #222; padding: 8px; border-radius: 4px">
                     <table border="0" cellpadding="3" width="100%">
                         <tr>
@@ -398,7 +413,9 @@
 
                 const benchmarks = [
                     {name: "MCS", unit: "seconds to build MCS", description: "Time to build MCS (in seconds)"},
+
                     {name: "nqueensx", unit: "nqueensx MIPS", description: "Millions of instructions per second"},
+
                     {name: "Pfannkuchen", unit: "Pfannkuchen IPS", description: "Iterations per second"},
                     {name: "Eratosthenes", unit: "Eratosthenes IPS", description: "Iterations per second"},
                     {name: "Serestone", unit: "Serestone IPS", description: "Iterations per second"},
@@ -407,6 +424,7 @@
                     {name: "Mirestone", unit: "Mirestone IPS", description: "Iterations per second"},
                     {name: "PI", unit: "PI calculation seconds", description: "Time to complete (in seconds)"},
                     {name: "SR2", unit: "SR2 digits calculated", description: "Digits calculated (in 10 minutes)"},
+
                     {name: "CGMIPS", unit: "instr_speed MIPS", description: "instr_speed — Composite Geometric MIPS"},
                     {name: "T1", unit: "instr_speed MIPS", description: "instr_speed — TEST 1: lda/sta ‑ even/odd (MIPS)"},
                     {name: "T2", unit: "instr_speed MIPS", description: "instr_speed — TEST 2: lda/sta ‑ odd/even (MIPS)"},
@@ -427,7 +445,9 @@
 
                 const unitSubtitles = {
                     "seconds to build MCS": "↓ Less is better (elapsed seconds) ↓",
+
                     "nqueensx MIPS": "↑ More is better (millions of instructions per second) ↑",
+
                     "Pfannkuchen IPS": "↑ More is better (iterations per second) ↑",
                     "Eratosthenes IPS": "↑ More is better (iterations per second) ↑",
                     "Serestone IPS": "↑ More is better (iterations per second) ↑",
@@ -436,6 +456,7 @@
                     "Mirestone IPS": "↑ More is better (iterations per second) ↑",
                     "PI calculation seconds": "↓ Less is better (elapsed seconds) ↓",
                     "SR2 digits calculated": "↑ More is better (digits calculated in ten minutes) ↑",
+
                     "instr_speed MIPS": "↑ More is better (millions of instructions per second) ↑",
                 };
 
@@ -848,6 +869,7 @@
                 }; // XXX: Add new benchmark data above
 
                 function getColorForSystem(systemName) {
+                    if (systemName === "YourSystem") return "#FFD700";
                     const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
                     const g = 0.618033988749895;
                     const h = (hash * g) % 1;
@@ -862,6 +884,7 @@
                 document.addEventListener("DOMContentLoaded", function () {
                     const systemSelectElement = document.getElementById("systemSelect");
                     const instructionsDiv = document.getElementById("instructions");
+                    const yourSystemFormContainer = document.getElementById("yourSystemFormContainer");
 
                     function maybeHideInstructions() {
                         if (systemSelectElement.selectedOptions && systemSelectElement.selectedOptions.length > 0) {
@@ -886,6 +909,7 @@
 
                     systemSelect.passedElement.element.addEventListener("change", function () {
                         const selectedSystems = systemSelect.getValue(true);
+                        const selectedBenchmarks = benchmarkSelect.getValue(true);
                         notesContainer.innerHTML = "";
 
                         selectedSystems.forEach((system) => {
@@ -898,12 +922,22 @@
                             }
                         });
 
+                        if (selectedSystems.includes("YourSystem")) {
+                            showYourSystemForm(selectedBenchmarks);
+                        } else {
+                            hideYourSystemForm();
+                            delete benchmarkData["YourSystem"];
+                            yourSystemData = {}; // <-- Only clear here
+                            updateChart();
+                        }
+
                         maybeHideInstructions();
                     });
 
                     benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
 
                     let charts = [];
+                    let yourSystemData = {};
 
                     let sortLowestToHighest = false;
                     const sortBtn = document.getElementById("sortChartsBtn");
@@ -914,6 +948,30 @@
                             sortBtn.textContent = sortLowestToHighest ? "Enabled" : "Disabled";
                             updateChart();
                         });
+                    }
+
+                    function showYourSystemForm(selectedBenchmarks) {
+                        let formHtml = '<label>&nbsp;Your Benchmark Results:</label><form id="yourSystemForm">';
+                        formHtml += '<div style="font-size: 1em; color: #fff; background: #252525; border: 1px solid #4b5563; border-radius: 4px; padding: 12px; margin-bottom: 8px;">';
+                        selectedBenchmarks.forEach((benchmark) => {
+                            const bench = benchmarks.find((b) => b.name === benchmark);
+                            formHtml += `
+                                <label style="color:#fff;">
+                                    <input type="number" class="number-input" step="0.001" min="0" name="${benchmark}" style="width: 5em; margin-left:8px;"
+                                        value="${yourSystemData[benchmark] ?? ""}" />
+                                    <span style="font-size: 0.9em; color: #bbb;">&nbsp;${benchmark}: ${bench.description}</span>
+                                </label>
+                            `;
+                        });
+                        formHtml += '<button type="submit" style="margin-left: 10px; margin-top: 8px;" class="sort-btn">Apply</button>';
+                        formHtml += "</div></form>";
+                        yourSystemFormContainer.innerHTML = formHtml;
+                        yourSystemFormContainer.style.display = "block";
+                    }
+
+                    function hideYourSystemForm() {
+                        yourSystemFormContainer.innerHTML = "";
+                        yourSystemFormContainer.style.display = "none";
                     }
 
                     function updateChart() {
@@ -931,9 +989,11 @@
 
                         selectedBenchmarks.forEach((benchmark) => {
                             const unit = benchmarks.find((b) => b.name === benchmark).unit;
+
                             if (!unitGroups[unit]) {
                                 unitGroups[unit] = [];
                             }
+
                             unitGroups[unit].push(benchmark);
                         });
 
@@ -1089,10 +1149,12 @@
                                     `<span class="system-label"><span class="color-dot" style="background-color: ${getColorForSystem(sys)}"></span>${sys}</span>`,
                                     ...benches.map((b) => {
                                         let v = benchmarkData[sys] && benchmarkData[sys][b] !== undefined ? benchmarkData[sys][b] : "";
+
                                         if (v !== "" && !isNaN(v)) {
                                             v = (Math.round(parseFloat(v) * 100) / 100).toFixed(2);
                                             return v;
                                         }
+
                                         return "";
                                     }),
                                 ];
@@ -1141,11 +1203,13 @@
                         document.querySelectorAll("#dynamicTableMIPS th.sortable-th").forEach((th) => {
                             th.onclick = function () {
                                 let col = parseInt(this.getAttribute("data-col"), 10);
+
                                 if (tableSortMIPS.col === col) tableSortMIPS.asc = !tableSortMIPS.asc;
                                 else {
                                     tableSortMIPS.col = col;
                                     tableSortMIPS.asc = true;
                                 }
+
                                 renderDynamicTable(selectedSystems, selectedBenchmarks);
                             };
                         });
@@ -1153,11 +1217,13 @@
                         document.querySelectorAll("#dynamicTableOther th.sortable-th").forEach((th) => {
                             th.onclick = function () {
                                 let col = parseInt(this.getAttribute("data-col"), 10);
+
                                 if (tableSortOther.col === col) tableSortOther.asc = !tableSortOther.asc;
                                 else {
                                     tableSortOther.col = col;
                                     tableSortOther.asc = true;
                                 }
+
                                 renderDynamicTable(selectedSystems, selectedBenchmarks);
                             };
                         });
@@ -1170,12 +1236,44 @@
                     }
 
                     systemSelectElement.addEventListener("change", updateChart);
-                    benchmarkSelectElement.addEventListener("change", updateChart);
+                    benchmarkSelectElement.addEventListener("change", function () {
+                        const selectedSystems = systemSelect.getValue(true);
+                        const selectedBenchmarks = benchmarkSelect.getValue(true);
+
+                        if (selectedSystems.includes("YourSystem")) {
+                            showYourSystemForm(selectedBenchmarks);
+                        } else {
+                            hideYourSystemForm();
+                        }
+
+                        updateChart();
+                    });
 
                     document.querySelectorAll('input[name="scale"]').forEach((radio) => {
                         radio.addEventListener("change", updateChart);
                     });
+
                     updateChart();
+
+                    yourSystemFormContainer.addEventListener("submit", function (e) {
+                        if (e.target && e.target.id === "yourSystemForm") {
+                            e.preventDefault();
+                            const formData = new FormData(e.target);
+                            yourSystemData = {};
+
+                            for (const [key, value] of formData.entries()) {
+                                if (value !== "") {
+                                    yourSystemData[key] = parseFloat(value);
+                                }
+                            }
+
+                            if (Object.keys(yourSystemData).length > 0) {
+                                benchmarkData["YourSystem"] = {...yourSystemData};
+                            }
+
+                            updateChart();
+                        }
+                    });
                 });
             </script>
         </main>
