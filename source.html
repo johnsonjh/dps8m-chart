@@ -13,6 +13,7 @@
         <meta http-equiv="Expires" content="0" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="darkreader-lock" />
 
         <title>DPS8M Benchmark Visualizer</title>
 
@@ -101,6 +102,12 @@
                 color: #ffffff;
             }
 
+            .choices__list {
+                min-height: 200px;
+                max-height: 55vh !important;
+                overflow-y: auto !important;
+            }
+
             .choices__item--selectable:hover {
                 background-color: #4b5563;
                 color: #ffffff;
@@ -123,6 +130,15 @@
                 color: #ffffff;
                 border: none;
                 border-radius: 0 !important;
+            }
+
+            .choices__group {
+                background-color: #222222 !important;
+            }
+
+            .choices__group,
+            .choices__group * {
+                color: #fff !important;
             }
 
             input[type="radio"] {
@@ -330,11 +346,7 @@
                         <select id="systemSelect" multiple autocomplete="off">
                             <!-- XXX: Add new system names below -->
 
-                            <optgroup label="Custom">
-                                <option value="YourSystem">Your System (custom)</option>
-                            </optgroup>
-
-                            <optgroup label="DPS8M R3.1.0 [64‑bit]">
+                            <optgroup label="DPS8M R3.1.0 [64‑bit] …">
                                 <option value="RPi5B_R310_64">Raspberry Pi 5B / Linux / Clang / PGO</option>
                                 <option value="RPi4B_R310_64">Raspberry Pi 4B / Linux / Clang / PGO</option>
                                 <option value="RPi3B_R310_64">Raspberry Pi 3B / Linux / Clang 20 / PGO</option>
@@ -349,9 +361,13 @@
                                 <option value="Thinkpad_R310_64">Thinkpad / Linux (KVM) / GCC / PGO</option>
                             </optgroup>
 
-                            <optgroup label="DPS8M R3.1.0 [32‑bit]">
+                            <optgroup label="DPS8M R3.1.0 [32‑bit] …">
                                 <option value="RPi3B_R310_32">Raspberry Pi 3B / Linux / GCC 14.3 / PGO</option>
                                 <option value="AR750S_R310_32">AR750S / Linux / GCC / PGO, NO_LOCKLESS</option>
+                            </optgroup>
+
+                            <optgroup label="User Defined …">
+                                <option value="YourSystem">Your System (custom)</option>
                             </optgroup>
                         </select>
                     </div>
