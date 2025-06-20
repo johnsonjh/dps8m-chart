@@ -257,6 +257,7 @@
                 width: 100%;
                 margin-top: 24px;
                 background: #222;
+                font-size: 0.92em;
             }
 
             .dynamicTable th,
@@ -269,6 +270,7 @@
 
             .dynamicTable th {
                 background: #1f2935;
+                font-size: 0.90em;
             }
 
             .dynamicTable tr:hover td {
@@ -1215,6 +1217,11 @@
                                 return;
                             }
 
+                            const prevScrolls = [];
+                                document.querySelectorAll('.table-scroll').forEach(div => {
+                                prevScrolls.push(div.scrollLeft);
+                            });
+
                             const selectedMIPS = selectedBenchmarks.filter((b) => MIPS_benchmarks.includes(b));
                             const selectedOther = selectedBenchmarks.filter((b) => !MIPS_benchmarks.includes(b));
                             let html = "";
@@ -1222,7 +1229,7 @@
                             function buildTable(systems, benches, tableId, sortState) {
                                 if (!benches.length) return "";
 
-                                let html = `<div class="table-scroll"><table id="${tableId}" style="font-size: 0.92em;" class="dynamicTable">`;
+                                let html = `<div class="table-scroll"><table id="${tableId}" class="dynamicTable">`;
                                 html += "<thead><tr>";
                                 html += `<th class="sortable-th${sortState.col === 0 ? " sorted-" + (sortState.asc ? "asc" : "desc") : ""}" data-col="0"><b>System</b></th>`;
                                 benches.forEach((bench, i) => {
@@ -1286,6 +1293,11 @@
                             }
 
                             tableContainer.innerHTML = html;
+
+                            document.querySelectorAll('.table-scroll').forEach((div, i) => {
+                                if (prevScrolls[i] !== undefined) div.scrollLeft = prevScrolls[i];
+                            });
+
                             document.querySelectorAll("#dynamicTableMIPS th.sortable-th").forEach((th) => {
                                 th.onclick = function () {
                                     let col = parseInt(this.getAttribute("data-col"), 10);
