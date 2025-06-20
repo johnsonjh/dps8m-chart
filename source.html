@@ -999,6 +999,7 @@
                         });
 
                         const hasShareState = new URLSearchParams(window.location.search).has("state");
+
                         if (!hasShareState) {
                             benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
                         }
@@ -1392,6 +1393,7 @@
 
                             const selectedSystems = systemSelect.getValue(true);
                             const selectedBenchmarks = benchmarkSelect.getValue(true);
+
                             if (selectedSystems.includes("YourSystem")) {
                                 showYourSystemForm(selectedBenchmarks);
                             } else {
@@ -1465,6 +1467,7 @@
 
                         (function restoreStateFromUrl() {
                             const params = new URLSearchParams(window.location.search);
+
                             if (params.has("state")) {
                                 try {
                                     const decoded = LZString.decompressFromEncodedURIComponent(params.get("state"));
@@ -1475,7 +1478,7 @@
                                         shareChartBtnCopied = false;
                                     }, 50);
                                 } catch (e) {
-                                    console.error("Failed to restore chart state:", e);
+                                    console.error("Failed to restore chart:", e);
                                 }
                             }
                         })();
