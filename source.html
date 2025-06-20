@@ -34,8 +34,10 @@
 
         <style>
             .zoom-out {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
                 width: 100vw;
-                height: 100vh;
             }
 
             @media (max-width: 800px) {
@@ -43,7 +45,7 @@
                     transform: scale(0.85);
                     transform-origin: top left;
                     width: 117.65vw;
-                    height: 117.65vh;
+                    min-height: 117.65vh;
                 }
             }
 
@@ -52,7 +54,7 @@
                     transform: scale(0.65);
                     transform-origin: top left;
                     width: 153.85vw;
-                    height: 153.85vh;
+                    min-height: 153.85vh;
                 }
             }
 
