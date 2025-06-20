@@ -7,6 +7,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+
+        <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>DPS8M Benchmark Visualizer</title>
@@ -298,7 +303,7 @@
             <div class="container">
                 <div class="select-container">
                     <label for="systemSelect">&nbsp;Select Systems:</label>
-                    <select id="systemSelect" multiple>
+                    <select id="systemSelect" multiple autocomplete="off">
                         <!-- XXX: Add new system names below -->
 
                         <optgroup label="Custom">
@@ -329,7 +334,7 @@
 
                 <div class="select-container">
                     <label for="benchmarkSelect">&nbsp;Select Benchmarks:</label>
-                    <select id="benchmarkSelect" multiple>
+                    <select id="benchmarkSelect" multiple autocomplete="off">
                         <option value="MCS">MCS</option>
 
                         <option value="nqueensx">nqueensx</option>
@@ -974,13 +979,13 @@
                     }
 
                     function showYourSystemForm(selectedBenchmarks) {
-                        let formHtml = '<label>&nbsp;Your Benchmark Results:</label><form id="yourSystemForm">';
+                        let formHtml = '<label>&nbsp;Your Benchmark Results:</label><form autocomplete="off" id="yourSystemForm">';
                         formHtml += '<div style="font-size: 1em; color: #fff; background: #252525; border: 1px solid #4b5563; border-radius: 4px; padding: 12px; margin-bottom: 8px;">';
                         selectedBenchmarks.forEach((benchmark) => {
                             const bench = benchmarks.find((b) => b.name === benchmark);
                             formHtml += `
                                 <label style="color:#fff;">
-                                    <input type="number" class="number-input" step="0.001" min="0" name="${benchmark}" style="width: 5em; margin-left:8px;"
+                                    <input type="number" class="number-input" step="0.001" min="0" name="${benchmark}" autocomplete="off" style="width: 5em; margin-left:8px;"
                                         value="${yourSystemData[benchmark] ?? ""}" />
                                     <span style="font-size: 0.9em; color: #bbb;">&nbsp;${benchmark}: ${bench.description}</span>
                                 </label>
