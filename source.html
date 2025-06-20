@@ -956,6 +956,7 @@
 
                     function getColorForSystem(systemName) {
                         if (systemName === "YourSystem") return "#FFD700";
+
                         const hash = Array.from(systemName).reduce((hash, char) => hash + char.charCodeAt(0), 0);
                         const g = 0.618033988749895;
                         const h = (hash * g) % 1;
@@ -1129,8 +1130,10 @@
                                         systemsForChart.sort((a, b) => {
                                             const va = benchmarkData[a]?.[bench];
                                             const vb = benchmarkData[b]?.[bench];
+
                                             if (va === undefined) return 1;
                                             if (vb === undefined) return -1;
+
                                             return va - vb;
                                         });
                                     } else {
@@ -1556,7 +1559,7 @@
                             <span>Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                         </td>
                         <td style="padding-right: 15px; vertical-align: middle; text-align: right; white-space: nowrap">
-                            <small>Version <code>2025.6.20.7</code></small>
+                            <small>Version <code>2025.6.20.8</code></small>
                         </td>
                     </tr>
                 </table>
