@@ -384,7 +384,7 @@
                             <tr>
                                 <td style="vertical-align: top">
                                     <label>Chart Sharing:</label>
-                                    <button id="shareBtn" class="sort-btn" type="button">Copy Link</button>
+                                    <button id="shareChartBtn" class="sort-btn" type="button">Copy Link</button>
                                 </td>
                             </tr>
                         </table>
@@ -1348,20 +1348,20 @@
                     }
 
                     function resetShareBtnText() {
-                        shareBtn.textContent = "Copy Link";
-                        shareBtnCopied = false;
+                        shareChartBtn.textContent = "Copy Link";
+                        shareChartBtnCopied = false;
                     }
 
-                    const shareBtn = document.getElementById("shareBtn");
-                    let shareBtnCopied = false;
+                    const shareChartBtn = document.getElementById("shareChartBtn");
+                    let shareChartBtnCopied = false;
 
-                    shareBtn.onclick = function () {
+                    shareChartBtn.onclick = function () {
                         const encoded = encodeURIComponent(LZString.compressToEncodedURIComponent(JSON.stringify(getCurrentChartState())));
                         const url = `${window.location.origin}${window.location.pathname}?state=${encoded}`;
 
                         function showCopied() {
-                            shareBtn.textContent = "Link Copied!";
-                            shareBtnCopied = true;
+                            shareChartBtn.textContent = "Link Copied!";
+                            shareChartBtnCopied = true;
                         }
 
                         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1416,8 +1416,8 @@
                                 const state = JSON.parse(decoded);
                                 setTimeout(() => {
                                     setChartState(state);
-                                    shareBtn.textContent = "Chart Restored!";
-                                    shareBtnCopied = false;
+                                    shareChartBtn.textContent = "Chart Restored!";
+                                    shareChartBtnCopied = false;
                                 }, 50);
                             } catch (e) {
                                 console.error("Failed to restore chart state:", e);
