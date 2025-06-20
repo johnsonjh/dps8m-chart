@@ -1493,14 +1493,17 @@
                             <span>&nbsp;&nbsp;Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                         </td>
                         <td style="vertical-align: middle; text-align: right; white-space: nowrap">
-                            <small>Version <code>2025.6.16.3</code></small>
+                            <small>Version <code>2025.6.20.0</code></small>
                             &nbsp;&nbsp;&nbsp;
                         </td>
                     </tr>
                 </table>
             </footer>
             <script>
-                document.getElementById("copyright-year").textContent = new Date().getFullYear();
+                const startYear = 2025;
+                const currentYear = new Date().getFullYear();
+                const copyrightText = currentYear === startYear ? `${startYear}` : `${startYear}‑${currentYear}`;
+                document.getElementById("copyright-year").textContent = copyrightText;
             </script>
         </div>
     </body>
