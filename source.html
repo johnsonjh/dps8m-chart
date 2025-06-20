@@ -1310,6 +1310,8 @@
                             scale: document.querySelector('input[name="scale"]:checked').value,
                             sort: sortLowestToHighest,
                             yourSystemData: {...yourSystemData},
+                            tableSortMIPS: {...tableSortMIPS},
+                            tableSortOther: {...tableSortOther},
                         };
                     }
 
@@ -1338,6 +1340,14 @@
                         if (state.yourSystemData) {
                             yourSystemData = {...state.yourSystemData};
                             benchmarkData["YourSystem"] = {...yourSystemData};
+                        }
+
+                        if (state.tableSortMIPS) {
+                            tableSortMIPS = {...state.tableSortMIPS};
+                        }
+
+                        if (state.tableSortOther) {
+                            tableSortOther = {...state.tableSortOther};
                         }
 
                         const selectedSystems = systemSelect.getValue(true);
