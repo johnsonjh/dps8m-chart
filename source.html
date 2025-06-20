@@ -1022,8 +1022,12 @@
 
                         const hasShareState = new URLSearchParams(window.location.search).has("state");
 
-                        if (!hasShareState) {
+                        function setDefaultChoiceValues() {
                             benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
+                        }
+
+                        if (!hasShareState) {
+                            setDefaultChoiceValues();
                         }
 
                         let charts = [];
@@ -1401,6 +1405,16 @@
 
                             if (state.benchmarks) benchmarkSelect.setChoiceByValue(state.benchmarks);
 
+                            const restoredSystems = state.systems || [];
+                            const restoredBenchmarks = state.benchmarks || [];
+                            if (Array.isArray(restoredSystems) && restoredSystems.length === 0 && Array.isArray(restoredBenchmarks) && restoredBenchmarks.length === 0) {
+                                resetShareBtnText();
+                                benchmarkSelect.removeActiveItems();
+                                setDefaultChoiceValues();
+                                const event = new Event("change", {bubbles: true});
+                                benchmarkSelect.passedElement.element.dispatchEvent(event);
+                            }
+
                             if (state.scale) {
                                 document.querySelectorAll('input[name="scale"]').forEach((r) => {
                                     r.checked = r.value === state.scale;
@@ -1503,15 +1517,30 @@
                             const params = new URLSearchParams(window.location.search);
 
                             if (params.has("state")) {
+                                let decoded, state;
                                 try {
-                                    const decoded = LZString.decompressFromEncodedURIComponent(params.get("state"));
-                                    const state = JSON.parse(decoded);
-                                    setTimeout(() => {
-                                        setChartState(state);
-                                        shareChartBtn.textContent = "Chart Restored!";
-                                        shareChartBtnCopied = false;
-                                    }, 50);
+                                    decoded = LZString.decompressFromEncodedURIComponent(params.get("state"));
+                                    state = decoded ? JSON.parse(decoded) : null;
+                                    if (state) {
+                                        setTimeout(() => {
+                                            setChartState(state);
+                                            shareChartBtn.textContent = "Chart Restored!";
+                                            shareChartBtnCopied = false;
+                                        }, 50);
+                                    } else {
+                                        benchmarkSelect.removeActiveItems();
+                                        setDefaultChoiceValues();
+                                        const event = new Event("change", {bubbles: true});
+                                        benchmarkSelect.passedElement.element.dispatchEvent(event);
+                                        resetShareBtnText();
+                                        console.error("Failed to restore chart: state is null or invalid");
+                                    }
                                 } catch (e) {
+                                    benchmarkSelect.removeActiveItems();
+                                    setDefaultChoiceValues();
+                                    const event = new Event("change", {bubbles: true});
+                                    benchmarkSelect.passedElement.element.dispatchEvent(event);
+                                    resetShareBtnText();
                                     console.error("Failed to restore chart:", e);
                                 }
                             }
@@ -1527,7 +1556,7 @@
                             <span>Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                         </td>
                         <td style="padding-right: 15px; vertical-align: middle; text-align: right; white-space: nowrap">
-                            <small>Version <code>2025.6.20.6</code></small>
+                            <small>Version <code>2025.6.20.7</code></small>
                         </td>
                     </tr>
                 </table>
