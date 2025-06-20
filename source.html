@@ -270,7 +270,7 @@
 
             .dynamicTable th {
                 background: #1f2935;
-                font-size: 0.90em;
+                font-size: 0.9em;
             }
 
             .dynamicTable tr:hover td {
@@ -1218,7 +1218,7 @@
                             }
 
                             const prevScrolls = [];
-                                document.querySelectorAll('.table-scroll').forEach(div => {
+                            document.querySelectorAll(".table-scroll").forEach((div) => {
                                 prevScrolls.push(div.scrollLeft);
                             });
 
@@ -1294,7 +1294,7 @@
 
                             tableContainer.innerHTML = html;
 
-                            document.querySelectorAll('.table-scroll').forEach((div, i) => {
+                            document.querySelectorAll(".table-scroll").forEach((div, i) => {
                                 if (prevScrolls[i] !== undefined) div.scrollLeft = prevScrolls[i];
                             });
 
@@ -1524,7 +1524,7 @@
                             <span>Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                         </td>
                         <td style="padding-right: 15px; vertical-align: middle; text-align: right; white-space: nowrap">
-                            <small>Version <code>2025.6.20.1</code></small>
+                            <small>Version <code>2025.6.20.2</code></small>
                         </td>
                     </tr>
                 </table>
