@@ -23,6 +23,9 @@
         <!-- "https://cdn.jsdelivr.net/npm/chartjs-plugin-deferred@2.0.0/dist/chartjs-plugin-deferred.min.js" -->
         <script src="chartjs-plugin-deferred.min.js"></script>
 
+        <!-- "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js" -->
+        <script src="lz-string.min.js"></script>
+
         <style>
             .choices {
                 background-color: #000000;
@@ -145,11 +148,11 @@
             }
 
             .scale-toggle {
-                margin-bottom: 24px;
+                margin-bottom: 0px;
                 white-space: nowrap;
                 display: inline-flex;
                 vertical-align: bottom;
-                gap: 3px;
+                gap: 0px;
             }
 
             .chartjs-render-monitor {
@@ -164,6 +167,7 @@
                 padding: 6px 16px;
                 margin-bottom: 16px;
                 cursor: pointer;
+                white-space: nowrap;
             }
 
             .sort-btn:hover {
@@ -358,19 +362,36 @@
                     </select>
                 </div>
 
-                <table border="0" cellpadding="0">
-                    <tr>
-                        <td style="vertical-align: top">
-                            <label>Scale Type:</label>
-                            <div class="scale-toggle"><input type="radio" name="scale" value="linear" checked /><small>Linear&nbsp;</small> <input type="radio" name="scale" value="logarithmic" /><small>Logarithmic</small></div>
-                        </td>
-                        <td style="vertical-align: top">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td style="vertical-align: top">
-                            <label>Chart Sorting:</label>
-                            <button id="sortChartsBtn" class="sort-btn" type="button">Disabled</button>
-                        </td>
-                    </tr>
-                </table>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px">
+                    <table border="0" cellpadding="0">
+                        <tr>
+                            <td style="vertical-align: top">
+                                <label>Scale Type:</label>
+                                <div class="scale-toggle"><input type="radio" name="scale" value="linear" checked /><small>Linear&nbsp;</small> <input type="radio" name="scale" value="logarithmic" /><small>Logarithmic</small></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px">
+                        <table border="0" cellpadding="0">
+                            <tr>
+                                <td style="vertical-align: top">
+                                    <label>Chart Sorting:</label>
+                                    <button id="sortChartsBtn" class="sort-btn" type="button">Disabled</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <table border="0" cellpadding="0">
+                            <tr>
+                                <td style="vertical-align: top">
+                                    <label>Chart Sharing:</label>
+                                    <div style="text-align: right; margin-bottom: 10px">
+                                        <button id="shareBtn" class="sort-btn" type="button">Copy Link</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <div id="yourSystemFormContainer" style="display: none; margin-top: 16px"></div>
                 <hr />
                 <div id="tableContainer"></div>
@@ -927,14 +948,17 @@
                         } else {
                             hideYourSystemForm();
                             delete benchmarkData["YourSystem"];
-                            yourSystemData = {}; // <-- Only clear here
+                            yourSystemData = {};
                             updateChart();
                         }
 
                         maybeHideInstructions();
                     });
 
-                    benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
+                    const hasShareState = new URLSearchParams(window.location.search).has("state");
+                    if (!hasShareState) {
+                        benchmarkSelect.setChoiceByValue(["CGMIPS", "nqueensx", "MCS", "PI"]);
+                    }
 
                     let charts = [];
                     let yourSystemData = {};
@@ -947,6 +971,7 @@
                             sortLowestToHighest = !sortLowestToHighest;
                             sortBtn.textContent = sortLowestToHighest ? "Enabled" : "Disabled";
                             updateChart();
+                            resetShareBtnText();
                         });
                     }
 
@@ -1274,6 +1299,133 @@
                             updateChart();
                         }
                     });
+
+                    function getCurrentChartState() {
+                        return {
+                            systems: systemSelect.getValue(true),
+                            benchmarks: benchmarkSelect.getValue(true),
+                            scale: document.querySelector('input[name="scale"]:checked').value,
+                            sort: sortLowestToHighest,
+                            yourSystemData: {...yourSystemData},
+                        };
+                    }
+
+                    function setChartState(state) {
+                        if (!state) return;
+
+                        if (state.systems) {
+                            systemSelect.setChoiceByValue(state.systems);
+                            const event = new Event("change", {bubbles: true});
+                            systemSelect.passedElement.element.dispatchEvent(event);
+                        }
+
+                        if (state.benchmarks) benchmarkSelect.setChoiceByValue(state.benchmarks);
+
+                        if (state.scale) {
+                            document.querySelectorAll('input[name="scale"]').forEach((r) => {
+                                r.checked = r.value === state.scale;
+                            });
+                        }
+
+                        if (typeof state.sort === "boolean") {
+                            sortLowestToHighest = state.sort;
+                            sortBtn.textContent = sortLowestToHighest ? "Enabled" : "Disabled";
+                        }
+
+                        if (state.yourSystemData) {
+                            yourSystemData = {...state.yourSystemData};
+                            benchmarkData["YourSystem"] = {...yourSystemData};
+                        }
+
+                        const selectedSystems = systemSelect.getValue(true);
+                        const selectedBenchmarks = benchmarkSelect.getValue(true);
+                        if (selectedSystems.includes("YourSystem")) {
+                            showYourSystemForm(selectedBenchmarks);
+                        } else {
+                            hideYourSystemForm();
+                        }
+
+                        maybeHideInstructions();
+                        updateChart();
+                    }
+
+                    function resetShareBtnText() {
+                        shareBtn.textContent = "Copy Link";
+                        shareBtnCopied = false;
+                    }
+
+                    const shareBtn = document.getElementById("shareBtn");
+                    let shareBtnCopied = false;
+
+                    shareBtn.onclick = function () {
+                        const encoded = encodeURIComponent(LZString.compressToEncodedURIComponent(JSON.stringify(getCurrentChartState())));
+                        const url = `${window.location.origin}${window.location.pathname}?state=${encoded}`;
+
+                        function showCopied() {
+                            shareBtn.textContent = "Link Copied!";
+                            shareBtnCopied = true;
+                        }
+
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard
+                                .writeText(url)
+                                .then(showCopied)
+                                .catch(function () {
+                                    fallbackCopyTextToClipboard(url, showCopied);
+                                });
+                        } else {
+                            fallbackCopyTextToClipboard(url, showCopied);
+                        }
+                    };
+
+                    function fallbackCopyTextToClipboard(text, callback) {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text;
+                        textArea.style.position = "fixed";
+                        textArea.style.opacity = "0";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+
+                        try {
+                            const successful = document.execCommand("copy");
+                            if (successful && typeof callback === "function") callback();
+                        } catch (err) {
+                            alert("Copy link:\n" + text);
+                        }
+
+                        document.body.removeChild(textArea);
+                    }
+
+                    systemSelect.passedElement.element.addEventListener("change", resetShareBtnText);
+                    benchmarkSelect.passedElement.element.addEventListener("change", resetShareBtnText);
+
+                    document.querySelectorAll('input[name="scale"]').forEach((radio) => {
+                        radio.addEventListener("change", resetShareBtnText);
+                    });
+
+                    yourSystemFormContainer.addEventListener("input", function (e) {
+                        if (e.target && e.target.matches('input[type="number"]')) {
+                            resetShareBtnText();
+                        }
+                    });
+
+                    (function restoreStateFromUrl() {
+                        const params = new URLSearchParams(window.location.search);
+                        if (params.has("state")) {
+                            try {
+                                const decoded = LZString.decompressFromEncodedURIComponent(params.get("state"));
+                                const state = JSON.parse(decoded);
+                                setTimeout(() => {
+                                    setChartState(state);
+                                    shareBtn.textContent = "Chart Restored!";
+                                    shareBtnCopied = false;
+                                }, 50);
+                            } catch (e) {
+                                console.error("Failed to restore chart state:", e);
+                            }
+                        }
+                    })();
                 });
             </script>
         </main>
