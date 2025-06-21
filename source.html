@@ -1276,14 +1276,21 @@
                                             vb = b[sortState.col];
 
                                         if (sortState.col === 0) {
-                                            va = va.replace(/<[^>]*>/g, "");
-                                            vb = vb.replace(/<[^>]*>/g, "");
+                                            while (/<[^>]*>/.test(va)) {
+                                                va = va.replace(/<[^>]*>/g, "");
+                                            }
+
+                                            while (/<[^>]*>/.test(vb)) {
+                                                vb = vb.replace(/<[^>]*>/g, "");
+                                            }
+
                                             return sortState.asc ? va.localeCompare(vb) : vb.localeCompare(va);
                                         }
 
                                         if (!isNaN(va) && !isNaN(vb) && va !== "" && vb !== "") {
                                             va = parseFloat(va);
                                             vb = parseFloat(vb);
+
                                             return sortState.asc ? va - vb : vb - va;
                                         } else {
                                             return sortState.asc ? ("" + va).localeCompare("" + vb) : ("" + vb).localeCompare("" + va);
@@ -1566,7 +1573,7 @@
                             <span>Copyright &copy; <span id="copyright-year"></span> <a href="https://dps8m.gitlab.io">The DPS8M Development Team</a></span>
                         </td>
                         <td style="padding-right: 15px; vertical-align: middle; text-align: right; white-space: nowrap">
-                            <small>Version <code>2025.6.20.9</code></small>
+                            <small>Version <code>2025.6.21.0</code></small>
                         </td>
                     </tr>
                 </table>
