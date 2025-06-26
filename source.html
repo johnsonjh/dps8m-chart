@@ -394,7 +394,7 @@
 
                             <optgroup label="DPS8M R3.1.0 [32‑bit] …">
                                 <option value="RPi1B_R310_32_GCC14_NL_PGO_musl">Raspberry Pi 1B+ / 32-bit / Linux (musl)/ GCC 14.1 (PGO) / NO_LOCKLESS</option>
-                                <option value="RPi1B_R310_32_GCC14_PGO_musl">Raspberry Pi 1B+ / 32-bit /  Linux (musl) / GCC 14.3 / (PGO)</option>
+                                <option value="RPi1B_R310_32_GCC14_PGO_musl">Raspberry Pi 1B+ / 32-bit / Linux (musl) / GCC 14.3 / (PGO)</option>
                                 <option value="RPi1B_R310_32_GCC14_NL_musl">Raspberry Pi 1B+ / 32-bit / Linux (musl) / GCC 14.3 / NO_LOCKLESS</option>
                                 <option value="RPi1B_R310_32_GCC14_musl">Raspberry Pi 1B+ / 32-bit / Linux (musl) / GCC 14.3</option>
                                 <option value="RPi3B_R310_32_Clang15_PGO">Raspberry Pi 3B / 32-bit / Linux (glibc) / Clang 15.0.6 (PGO)</option>
@@ -501,10 +501,7 @@
                     Chart.register(ChartDeferred);
 
                     const systemNotes = {
-                        YourSystem:
-                            "<br><ul><li><b>YourSystem</b><ul>" +
-                            "<li>Custom System <small>(User supplied data)</small></li>" +
-                            "</ul></li></ul><br>",
+                        YourSystem: "<br><ul><li><b>YourSystem</b><ul>" + "<li>Custom System <small>(User supplied data)</small></li>" + "</ul></li></ul><br>",
 
                         RPi5B_R310_64_Clang20_PGO:
                             "<br><ul><li><b>RPi5B_R310_64_Clang20_PGO</b><ul>" +
@@ -1521,7 +1518,6 @@
                             PI: ,
                             SR2: ,
                         }, */
-
                     }; // XXX: Add new benchmark data above
 
                     function getColorForSystem(systemName) {
