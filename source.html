@@ -1820,7 +1820,7 @@
                                             let v = benchmarkData[sys] && benchmarkData[sys][b] !== undefined ? benchmarkData[sys][b] : "";
 
                                             if (v !== "" && !isNaN(v)) {
-                                                v = (Math.round(parseFloat(v) * 100) / 100).toFixed(3);
+                                                v = (Math.round(parseFloat(v) * 100) / 100).toFixed(3).replace(/\.?0+$/, '');
                                                 return v;
                                             }
 
