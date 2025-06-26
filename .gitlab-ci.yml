@@ -1,0 +1,21 @@
+pages:
+  stage: deploy
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - apk update || true
+    - apk -U upgrade --prune || true
+    - apk -U add -u advancecomp pigz brotli
+    - mkdir -p "public"
+    - cp *.js *.css index.html "public"
+    - find "public" -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec brotli -f -k -v -Z -- "{}" \; || true
+    - find "public" -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec pigz -9 -f -k -m -v -- "{}" \; || true
+    - ls -laR -- "public" || true
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - public
+  retry: 2
+  timeout: 120 minutes
+  interruptible: false
